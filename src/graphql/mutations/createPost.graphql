@@ -1,0 +1,7 @@
+mutation CreatePost($userId: String!, $postInput: PostInput!) {
+  createPost(userid: $userId, postInput: $postInput) {
+    ...RegularPost
+    repliesCount
+    createdAt
+  }
+}

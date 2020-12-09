@@ -1,0 +1,6 @@
+mutation AddProductImage($productId: String!, $imagesSrc: [String!]!) {
+  addProductImages(productId: $productId, imagesSrc: $imagesSrc) {
+    _id
+    images
+  }
+}

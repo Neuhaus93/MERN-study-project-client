@@ -1,0 +1,7 @@
+fragment RegularProduct on Product {
+  _id
+  title
+  price
+  location
+  images
+}

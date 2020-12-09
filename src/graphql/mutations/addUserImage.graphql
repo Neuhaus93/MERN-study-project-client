@@ -1,0 +1,6 @@
+mutation addUserImage($imageSrc: String!, $firebaseId: String!) {
+  addUserImage(imageSrc: $imageSrc, firebaseId: $firebaseId) {
+    _id
+    photo
+  }
+}

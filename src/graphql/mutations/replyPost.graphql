@@ -1,0 +1,13 @@
+mutation ReplyPost($postId: String!, $userId: String!, $body: String!) {
+  replyPost(postId: $postId, userId: $userId, body: $body) {
+    _id
+    replies {
+      _id
+      body
+      user {
+        _id
+      }
+      createdAt
+    }
+  }
+}

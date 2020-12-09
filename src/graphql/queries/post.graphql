@@ -1,0 +1,25 @@
+query Post($postId: String!) {
+  post(postId: $postId) {
+    ...RegularPost
+    category
+    repliesCount
+    creator {
+      _id
+      fullName
+      photo
+    }
+    replies {
+      _id
+      user {
+        _id
+        fullName
+        photo
+      }
+      body
+      createdAt
+    }
+    repliesCount
+    createdAt
+    updatedAt
+  }
+}

@@ -1,0 +1,7 @@
+mutation UpdateProduct($updateProductInput: UpdateProductInput!) {
+  udpateProduct(updateProductInput: $updateProductInput) {
+    ...RegularProduct
+    description
+    category
+  }
+}

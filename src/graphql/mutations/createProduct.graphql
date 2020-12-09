@@ -1,0 +1,13 @@
+mutation CreateProduct($createProductInput: CreateProductInput!) {
+  createProduct(createProductInput: $createProductInput) {
+    ...RegularProduct
+    description
+    category
+    creator {
+      _id
+      fullName
+      photo
+    }
+    createdAt
+  }
+}

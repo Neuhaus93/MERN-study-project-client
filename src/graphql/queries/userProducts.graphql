@@ -1,0 +1,10 @@
+query UserProducts($userId: String!) {
+  userProducts(userId: $userId) {
+    _id
+    title
+    category
+    description
+    images
+    createdAt
+  }
+}

@@ -1,0 +1,15 @@
+query User($mongoId: String, $firebaseId: String) {
+  user(mongoId: $mongoId, firebaseId: $firebaseId) {
+    ...RegularUser
+    socials {
+      phoneNumber
+      facebook
+      linkedin
+      instagram
+    }
+    photo
+    likes
+    createdAt
+    updatedAt
+  }
+}

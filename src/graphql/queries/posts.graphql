@@ -1,0 +1,13 @@
+query Posts {
+  posts {
+    _id
+    creator {
+      _id
+      fullName
+    }
+    title
+    category
+    repliesCount
+    createdAt
+  }
+}

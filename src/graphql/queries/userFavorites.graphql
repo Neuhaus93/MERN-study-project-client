@@ -1,0 +1,10 @@
+query UserFavorites($favoritesList: [String!]!) {
+  userFavorites(favoritesList: $favoritesList) {
+    _id
+    title
+    description
+    category
+    createdAt
+    images
+  }
+}

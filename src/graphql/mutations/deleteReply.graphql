@@ -1,0 +1,9 @@
+mutation DeleteReply($postId: String!, $replyId: String!) {
+  deleteReply(postId: $postId, replyId: $replyId) {
+    _id
+    replies {
+      _id
+    }
+    repliesCount
+  }
+}

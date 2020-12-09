@@ -1,0 +1,14 @@
+export const ROUTE_LANDING = '/';
+export const ROUTE_FORGOT_PASSWORD = '/forgot-password';
+export const ROUTE_REGISTER = '/register';
+export const ROUTE_LOGIN = '/login';
+export const ROUTE_CREATE_AD = '/create-ad';
+export const ROUTE_AD = '/ad';
+export const ROUTE_PROFILE = '/profile';
+export const ROUTE_FAVORITES = '/profile/favorites';
+export const ROUTE_MY_ADS = '/profile/my-ads';
+export const ROUTE_POST = '/post';
+export const ROUTE_SEARCH = '/search';
+export const ROUTE_EDIT_PROFILE = '/profile/edit';
+export const ROUTE_ALL_PRODUCTS = '/all-products';
+export const ROUTE_ALL_POSTS = '/all-posts';

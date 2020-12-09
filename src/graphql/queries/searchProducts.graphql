@@ -1,0 +1,7 @@
+query SearchProducts($searchTerm: String!) {
+  searchProducts(term: $searchTerm) {
+    ...RegularProduct
+    category
+    createdAt
+  }
+}

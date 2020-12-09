@@ -1,0 +1,14 @@
+mutation UpdateUser($updateUserInput: UpdateUserInput!, $userId: String!) {
+  updateUser(updateUserInput: $updateUserInput, userId: $userId) {
+    _id
+    firstName
+    lastName
+    fullName
+    socials {
+      phoneNumber
+      facebook
+      linkedin
+      instagram
+    }
+  }
+}

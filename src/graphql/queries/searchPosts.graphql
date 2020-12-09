@@ -1,0 +1,12 @@
+query SearchPosts($searchTerm: String!) {
+  searchPosts(term: $searchTerm) {
+    _id
+    creator {
+      fullName
+    }
+    title
+    category
+    repliesCount
+    createdAt
+  }
+}

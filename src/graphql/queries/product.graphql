@@ -1,0 +1,20 @@
+query Product($productId: String!) {
+  product(productId: $productId) {
+    ...RegularProduct
+    description
+    category
+    creator {
+      _id
+      fullName
+      photo
+      email
+      socials {
+        phoneNumber
+        facebook
+        linkedin
+        instagram
+      }
+    }
+    createdAt
+  }
+}

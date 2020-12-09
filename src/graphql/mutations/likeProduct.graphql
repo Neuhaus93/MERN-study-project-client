@@ -1,0 +1,6 @@
+mutation LikeProduct($productId: String!, $userId: String!) {
+  likeProduct(productId: $productId, userId: $userId) {
+    _id
+    likes
+  }
+}
