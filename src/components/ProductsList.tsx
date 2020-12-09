@@ -1,9 +1,9 @@
 import React from 'react';
+import ContentLoader from 'react-content-loader';
 import { Link } from 'react-router-dom';
 import { ProductsQuery, useProductsQuery } from '../graphql/__generated__';
 import { ListTitle } from '../pages/ListTitle';
 import { IMAGE_FAKE_ARRAY } from '../util/images';
-import ContentLoader from 'react-content-loader';
 
 export const ProductsList: React.FC<{}> = () => {
   const { data } = useProductsQuery();
@@ -12,9 +12,6 @@ export const ProductsList: React.FC<{}> = () => {
     <div className='mx-1 my-2'>
       <ListTitle text='Latest Products' url='/#' />
       <div className='grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:gap-3 lg:grid-cols-5'>
-        {/* {[...Array(12)].map((_, index) => (
-          <ProductCardSkeleton key={index} />
-        ))} */}
         {data
           ? data.products.map((p) => {
               return <ProductCard key={p._id} product={p} />;
@@ -77,7 +74,6 @@ const ProductCardSkeleton: React.FC = () => (
   <ContentLoader
     preserveAspectRatio='xMinYMin'
     height={238}
-    // viewBox='0 0 100% 238'
     className='overflow-hidden w-full px-1'>
     <rect x='0' y='0' rx='10' ry='10' width='100%' height='176' />
     <rect x='10' y='188' rx='5' ry='5' width='80%' height='18' />

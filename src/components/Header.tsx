@@ -206,6 +206,7 @@ export const Header: React.FC<HeaderProps> = () => {
 };
 
 const StyledForm = styled.form<{ focus: boolean }>`
+  transition: all 0.2s;
   box-shadow: ${(props) =>
     props.focus ? '0 0 6px rgba(255, 255, 255, 0.55)' : undefined};
 `;

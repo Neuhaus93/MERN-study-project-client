@@ -36,9 +36,9 @@ const PostCard: React.FC<{}> = () => {
       <div className='w-12 h-12 p-2 my-0 mr-3'>
         <Image srcList={imageUrl} alt='post' />
       </div>
-      <div>
+      <div className='flex flex-col justify-around'>
         <h4 className='font-bold'>Post Title</h4>
-        <div className='flex text-sm text-gray-700'>
+        <div className='text-gray-700 flex text-xs'>
           <p>Lucas Neuhaus</p>
           <div className='mx-2'>{'·'}</div>
           <Moment date={new Date()} format='ll' />

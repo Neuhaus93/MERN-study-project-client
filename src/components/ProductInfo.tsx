@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FaHeart, FaShareAlt } from 'react-icons/fa';
 import { IoLocationSharp } from 'react-icons/io5';
 import Moment from 'react-moment';
@@ -82,6 +82,13 @@ type SocialArrType = Array<{
 const ReplyButton: React.FC<{ socials: SocialArrType }> = ({ socials }) => {
   const [open, setOpen] = useState(false);
   const { getLinkIcon, getShownValueAndUrl } = helperFunctions;
+  const componentIsMounted = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      componentIsMounted.current = false;
+    };
+  }, []);
 
   const getStyle = (color: string, isLeft?: boolean) => {
     const left: React.CSSProperties = {
@@ -96,40 +103,49 @@ const ReplyButton: React.FC<{ socials: SocialArrType }> = ({ socials }) => {
     return isLeft ? left : right;
   };
 
+  const handleClickAway = () => {
+    if (componentIsMounted) {
+      setOpen(false);
+    }
+  };
+
   return (
-    <ClickAwayListener
-      onClickAway={() => setOpen(false)}
-      className='relative flex-1'>
-      <button
-        onClick={() => setOpen(!open)}
-        className='text-blue-50 bg-blue-800 border border-blue-200 w-full h-full rounded-md font-bold'>
-        Reply
-      </button>
-      {open && (
-        <StyledDropdown className='bg-blue-50 shadow-md rounded-md'>
-          {socials.map((social, index) => {
-            const LinkIcon = getLinkIcon(social.name);
-            const { color, Icon: SocialIcon } = SOCIALS[social.name];
-            const [shownValue, url] = getShownValueAndUrl(
-              social.name,
-              social.url
-            );
-            return (
-              <div key={index} className='flex items-center'>
-                <SocialIcon className='text-lg' style={getStyle(color, true)} />
-                <p className='text-gray-900 mr-2 text-sm'>{shownValue}</p>
-                {LinkIcon && (
-                  <LinkIcon
+    <ClickAwayListener className='flex-1' onClickAway={handleClickAway}>
+      <div className='relative h-full'>
+        <button
+          onClick={() => setOpen(!open)}
+          className='text-blue-50 bg-blue-800 border border-blue-200 w-full h-full rounded-md font-bold'>
+          Reply
+        </button>
+        {open && (
+          <StyledDropdown className='bg-blue-50 shadow-md rounded-md'>
+            {socials.map((social, index) => {
+              const LinkIcon = getLinkIcon(social.name);
+              const { color, Icon: SocialIcon } = SOCIALS[social.name];
+              const [shownValue, url] = getShownValueAndUrl(
+                social.name,
+                social.url
+              );
+              return (
+                <div key={index} className='flex items-center'>
+                  <SocialIcon
                     className='text-lg'
-                    style={getStyle(color)}
-                    onClick={() => window.open(url)}
+                    style={getStyle(color, true)}
                   />
-                )}
-              </div>
-            );
-          })}
-        </StyledDropdown>
-      )}
+                  <p className='text-gray-900 mr-2 text-sm'>{shownValue}</p>
+                  {LinkIcon && (
+                    <LinkIcon
+                      className='text-lg'
+                      style={getStyle(color)}
+                      onClick={() => window.open(url)}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </StyledDropdown>
+        )}
+      </div>
     </ClickAwayListener>
   );
 };
@@ -144,6 +160,6 @@ const StyledDropdown = styled.div`
 
   @media (min-width: 768px) {
     bottom: auto;
-    top: 40px;
+    top: 48px;
   }
 `;

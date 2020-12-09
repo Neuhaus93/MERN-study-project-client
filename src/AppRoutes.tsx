@@ -1,7 +1,14 @@
 import React from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Redirect,
+  Route,
+  RouteProps,
+  Switch,
+} from 'react-router-dom';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
+import { useAuth } from './hooks/useAuth';
 import { AdScreen } from './pages/AdScreen';
 import { HomeScreen } from './pages/HomeScreen';
 import { LoginScreen } from './pages/LoginScreen';
@@ -14,7 +21,10 @@ export const App: React.FC = () => {
         <Header />
         <Switch>
           <Route component={HomeScreen} path={ROUTE_LANDING} exact />
-          <Route component={LoginScreen} path={`${ROUTE_LOGIN}/:lastPath?`} />
+          <AuthRoute
+            component={LoginScreen}
+            path={`${ROUTE_LOGIN}/:lastPath?`}
+          />
           <Route component={AdScreen} path={`${ROUTE_AD}/:id`} />
           {/* <AuthRoute component={RegisterScreen} path={ROUTES.REGISTER} />
           <PrivateRoute component={CreateAdScreen} path={ROUTES.CREATE_AD} />
@@ -31,12 +41,30 @@ export const App: React.FC = () => {
   );
 };
 
-// interface AuthRouteProps extends RouteProps {
-//   // tslint:disable-next-line:no-any
-//   component: any;
-// }
+interface CustomRouteProps extends RouteProps {
+  // tslint:disable-next-line:no-any
+  component: any;
+}
 
-// const AuthRoute = (props: AuthRouteProps) => {
+const AuthRoute = (props: CustomRouteProps) => {
+  const { component: Component, ...rest } = props;
+  const { currentUser } = useAuth();
+
+  return (
+    <Route
+      {...rest}
+      render={(routeProps) =>
+        currentUser ? (
+          <Redirect to={ROUTE_LANDING} />
+        ) : (
+          <Component {...routeProps} />
+        )
+      }
+    />
+  );
+};
+
+// const PrivateRoute = (props: CustomRouteProps) => {
 //   const { component: Component, ...rest } = props;
 //   const { currentUser } = useAuth();
 
@@ -44,7 +72,16 @@ export const App: React.FC = () => {
 //     <Route
 //       {...rest}
 //       render={(routeProps) =>
-//         currentUser ? <Redirect to={LANDING} /> : <Component {...routeProps} />
+//         currentUser ? (
+//           <Component {...routeProps} />
+//         ) : (
+//           <Redirect
+//             to={{
+//               pathname: ROUTE_LOGIN,
+//               state: { from: routeProps.location },
+//             }}
+//           />
+//         )
 //       }
 //     />
 //   );

@@ -6,7 +6,7 @@ interface SocialBadgeProps {
   isActive?: boolean;
 }
 
-export const StyledSocialBadge = styled.div<SocialBadgeProps>`
+export const StyledSocialBadge = styled.button<SocialBadgeProps>`
   /** ANIMATE */
   transition: all 0.35s;
   transition-timing-function: cubic-bezier(0.31, -0.105, 0.43, 1.59);
@@ -39,6 +39,11 @@ export const StyledSocialBadge = styled.div<SocialBadgeProps>`
   }
 
   & .icon {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     transform: scale(0.9);
     color: ${({ color }) => color};
     transition: all 0.35s;
@@ -58,5 +63,9 @@ export const StyledSocialBadge = styled.div<SocialBadgeProps>`
       color: #fff;
       transform: scale(1);
     }
+  }
+
+  &:focus {
+    outline: 0;
   }
 `;

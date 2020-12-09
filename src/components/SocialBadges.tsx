@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
 import { StyledSocialBadge } from '../styles/StyledSocialBadge';
 import {
@@ -48,16 +48,30 @@ const Badge: React.FC<BadgeProps> = (props) => {
   const { size, social, value, index } = props;
   const { Icon, color } = SOCIALS[social];
   const [open, setOpen] = useState(false);
+  const componentIsMounted = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      componentIsMounted.current = false;
+    };
+  }, []);
+
+  const handleClickAway = () => {
+    if (componentIsMounted) {
+      setOpen(false);
+    }
+  };
 
   return (
-    <ClickAwayListener onClickAway={() => setOpen(false)}>
+    <ClickAwayListener onClickAway={handleClickAway}>
       <div className='inline-block relative'>
-        <StyledSocialBadge color={color} size={size}>
-          <button
-            onClick={() => setOpen(!open)}
-            className='w-full h-full flex justify-center items-center outline-none'>
-            <Icon className='icon' />
-          </button>
+        <StyledSocialBadge
+          color={color}
+          size={size}
+          onClick={() => setOpen(!open)}>
+          <div className='icon'>
+            <Icon />
+          </div>
         </StyledSocialBadge>
         {open && (
           <BadgeDropdown
@@ -68,6 +82,13 @@ const Badge: React.FC<BadgeProps> = (props) => {
             index={index}
           />
         )}
+        {/* <StyledSocialBadge color={color} size={size}>
+          <button
+            onClick={() => setOpen(!open)}
+            className='w-full h-full flex justify-center items-center outline-none'>
+            <Icon className='icon' />
+          </button>
+        </StyledSocialBadge> */}
       </div>
     </ClickAwayListener>
   );
@@ -88,7 +109,7 @@ const BadgeDropdown: React.FC<DropdownProps> = (props) => {
 
   return (
     <div
-      className='bg-gray-50 absolute flex items-center bottom-10 left-0 z-10 whitespace-nowrap p-2 shadow-md'
+      className='bg-gray-50 absolute flex items-center bottom-9 left-0 z-10 whitespace-nowrap p-2 shadow-md'
       style={{ left: -38 * index }}>
       <SocialIcon className='mr-2' style={{ color, fontSize: '1.1rem' }} />
       <p className='text-sm text-gray-600'>
