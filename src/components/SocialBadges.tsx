@@ -1,10 +1,12 @@
 import React, { useRef, useState } from 'react';
-import { StyledSocialBadge } from '../styles/StyledSocialBadge';
-import { SOCIALS, SocialsObjType } from '../util/socials';
-import { RiSendPlaneFill, RiExternalLinkLine } from 'react-icons/ri';
-import { IoSend } from 'react-icons/io5';
-import { FiExternalLink } from 'react-icons/fi';
 import ClickAwayListener from 'react-click-away-listener';
+import { StyledSocialBadge } from '../styles/StyledSocialBadge';
+import {
+  AllSocials,
+  helperFunctions,
+  SOCIALS,
+  SocialsObjType,
+} from '../util/socials';
 
 interface SocialBadgesProps {
   size?: string;
@@ -72,7 +74,7 @@ const Badge: React.FC<BadgeProps> = (props) => {
 };
 
 interface DropdownProps {
-  social: string;
+  social: AllSocials;
   value: string;
   color: string;
   Icon: any;
@@ -80,53 +82,20 @@ interface DropdownProps {
 }
 
 const BadgeDropdown: React.FC<DropdownProps> = (props) => {
-  const { social, value, color, Icon, index } = props;
-  const getUrl = (social: string, value: string) => {
-    switch (social) {
-      case 'email':
-        return [value, getMailToUrl(value)];
-
-      case 'phoneNumber':
-        return [value, value];
-
-      case 'facebook':
-        return [`facebook.com/${value}`, `http://facebook.com/${value}`];
-
-      case 'linkedin':
-        return [`linkedin.com/in/${value}`, `http://linkedin.com/in/${value}`];
-
-      case 'instagram':
-        return [`instagram.com/${value}`, `http://instagram.com/${value}`];
-
-      default:
-        return [value, value];
-    }
-  };
-
-  const getMailToUrl = (value: string) => {
-    return `mailto:${value}?subject=I%20have%20interest%20on%20your%20Jewelers%20Networks%20Ad!&body=This%20is%20the%20ad%20I%20am%20interested%20in%3A%20${window.location.href}`;
-  };
+  const { social, value, color, Icon: SocialIcon, index } = props;
+  const { getShownValueAndUrl, getLinkIcon } = helperFunctions;
+  const LinkIcon = getLinkIcon(social);
 
   return (
     <div
       className='bg-gray-50 absolute flex items-center bottom-10 left-0 z-10 whitespace-nowrap p-2 shadow-md'
       style={{ left: -38 * index }}>
-      <Icon className='mr-2' style={{ color, fontSize: '1.1rem' }} />
-      <p className='text-sm text-gray-600'>{getUrl(social, value)[0]}</p>
-      {social === 'email' ? (
-        <IoSend
-          className='cursor-pointer ml-3'
-          style={{ color }}
-          onClick={() => window.open(getUrl(social, value)[1])}
-        />
-      ) : (
-        social !== 'phoneNumber' && (
-          <FiExternalLink
-            className='cursor-pointer ml-3'
-            style={{ color }}
-            onClick={() => window.open(getUrl(social, value)[1])}
-          />
-        )
+      <SocialIcon className='mr-2' style={{ color, fontSize: '1.1rem' }} />
+      <p className='text-sm text-gray-600'>
+        {getShownValueAndUrl(social, value)[0]}
+      </p>
+      {LinkIcon && (
+        <LinkIcon className='cursor-pointer ml-3' style={{ color }} />
       )}
     </div>
   );
