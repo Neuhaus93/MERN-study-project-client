@@ -20,7 +20,7 @@ export const AdScreen: React.FC<AdScreenProps> = ({ match }) => {
 
   return (
     <DefaultWrapper className='md:max-w-screen-md lg:max-w-screen-lg px-4 sm:px-8 pt-2 pb-4 mx-auto'>
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-12'>
+      <div className='grid grid-cols-1 md:grid-cols-2 md:gap-12'>
         <ImageGallery
           items={images}
           showPlayButton={false}

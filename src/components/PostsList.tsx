@@ -21,7 +21,7 @@ export const PostsList: React.FC<PostsListProps> = () => {
 };
 const StyledPostCard = styled.div`
   &:nth-child(odd) {
-    background: #ebeaef;
+    background: #f0eff1;
   }
   &:last-child {
     border-bottom-width: 1px;
@@ -37,8 +37,8 @@ const PostCard: React.FC<{}> = () => {
         <Image srcList={imageUrl} alt='post' />
       </div>
       <div>
-        <h4 className='font-bold text-lg'>Post Title</h4>
-        <div className='flex text-sm'>
+        <h4 className='font-bold'>Post Title</h4>
+        <div className='flex text-sm text-gray-700'>
           <p>Lucas Neuhaus</p>
           <div className='mx-2'>{'·'}</div>
           <Moment date={new Date()} format='ll' />

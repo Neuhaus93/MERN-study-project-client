@@ -17,7 +17,7 @@ export const SellerInfo: React.FC<SellerInfoProps> = () => {
     <div className='flex'>
       <div className='rounded-full bg-black h-16 w-16'></div>
       <div className='flex flex-col justify-around ml-6'>
-        <h6 className='font-semibold'>Lucas Neuhaus</h6>
+        <h6 className='text-sm font-semibold'>Lucas Neuhaus</h6>
         <div className='flex space-x-2'>
           <SocialBadges socialsObj={socialsObj} />
         </div>
