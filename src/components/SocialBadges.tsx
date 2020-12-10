@@ -46,7 +46,6 @@ interface BadgeProps {
 
 const Badge: React.FC<BadgeProps> = (props) => {
   const { size, social, value, index } = props;
-  const { Icon, color } = SOCIALS[social];
   const [open, setOpen] = useState(false);
   const componentIsMounted = useRef(true);
 
@@ -55,6 +54,11 @@ const Badge: React.FC<BadgeProps> = (props) => {
       componentIsMounted.current = false;
     };
   }, []);
+
+  if (!SOCIALS[social]) {
+    return null;
+  }
+  const { Icon, color } = SOCIALS[social];
 
   const handleClickAway = () => {
     if (componentIsMounted) {

@@ -543,7 +543,7 @@ export type SearchPostsQuery = (
     & Pick<Post, '_id' | 'title' | 'category' | 'repliesCount' | 'createdAt'>
     & { creator: (
       { __typename?: 'User' }
-      & Pick<User, 'fullName'>
+      & Pick<User, '_id' | 'fullName'>
     ) }
   )> }
 );
@@ -1240,6 +1240,7 @@ export const SearchPostsDocument = gql`
   searchPosts(term: $searchTerm) {
     _id
     creator {
+      _id
       fullName
     }
     title

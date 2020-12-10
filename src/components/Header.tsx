@@ -2,20 +2,21 @@ import styled from 'styled-components';
 import { Transition } from '@headlessui/react';
 import { FiSearch } from 'react-icons/fi';
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
+import { ROUTE_SEARCH } from '../util/routes';
 
 interface HeaderProps {}
 
 const NAV_PAGES = [
-  { title: 'Dashboard', url: '/#' },
-  { title: 'Team', url: '/#' },
+  { title: 'Post an Ad', url: '/#' },
+  // { title: 'Team', url: '/#' },
   // { title: 'Projects', url: '/#' },
   // { title: 'Calendar', url: '/#' },
   // { title: 'Reports', url: '/#' },
 ];
 const NAV_PROFILE = ['Your Profile', 'Sign out'];
 const selectedStyle =
-  'bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium';
+  'bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700';
 const notSelectedStyle =
   'text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium';
 
@@ -24,7 +25,7 @@ export const Header: React.FC<HeaderProps> = () => {
 
   // DEBUG
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-  const currentPage = 'Dashboard';
+  const currentPage = 'Post an Ad';
 
   const handleResize = () => {
     setWindowWidth(window.innerWidth);
@@ -226,29 +227,34 @@ const StyledForm = styled.form<{ focus: boolean }>`
 `;
 
 const SearchBar: React.FC = () => {
-  const [value, setValue] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [focus, setFocus] = useState(false);
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const history = useHistory();
+
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Searched term: ' + value);
+    if (searchTerm) {
+      let term = searchTerm;
+      setSearchTerm('');
+      history.push(`${ROUTE_SEARCH}?q=${term}`);
+    }
   };
 
   return (
     <StyledForm
       focus={focus}
-      onSubmit={handleSubmit}
+      onSubmit={handleSearch}
       className='bg-gray-100 relative w-96 h-8 rounded-3xl flex items-center px-4'>
       <input
         placeholder='Search for anything...'
         alt='search'
-        value={value}
+        value={searchTerm}
         onFocus={() => setFocus(true)}
         onBlur={() => setFocus(false)}
         onChange={(e) => {
-          setValue(e.target.value);
+          setSearchTerm(e.target.value);
         }}
         maxLength={50}
-        // style={{ outlineColor: 'transparent' }}
         className='text-sm w-full outline-none bg-transparent'
       />
       <button

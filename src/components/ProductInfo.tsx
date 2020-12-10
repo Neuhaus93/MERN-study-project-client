@@ -1,25 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
+import ClickAwayListener from 'react-click-away-listener';
 import { FaHeart, FaShareAlt } from 'react-icons/fa';
 import { IoLocationSharp } from 'react-icons/io5';
 import Moment from 'react-moment';
-import { InlineIcon } from './MyIcon';
 import styled from 'styled-components';
-import { SOCIALS, helperFunctions, AllSocials } from '../util/socials';
-import ClickAwayListener from 'react-click-away-listener';
+import { ProductQuery } from '../graphql/__generated__';
+import { AllSocials, helperFunctions, SOCIALS } from '../util/socials';
+import { InlineIcon } from './MyIcon';
 
-interface ProductInfoProps {}
+interface ProductInfoProps {
+  product: ProductQuery['product'];
+}
 
-const fakeItemInfo = {
-  title: 'New title for the ad',
-  location: 'Alabama',
-  price: '30',
-  description:
-    'Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti dolore nulla vitae enim delectus sunt adipisci quia possimus alias ipsa libero veniam illo sit inventore perferendis ratione praesentium, officiis sed obcaecati eos exercitationem pariatur at aliquid accusantium. Quibusdam, odio nam?',
-  date: new Date(),
-};
-
-export const ProductInfo: React.FC<ProductInfoProps> = () => {
-  const { title, location, price, description, date } = fakeItemInfo;
+export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
+  const { title, location, price, description, createdAt } = product;
 
   return (
     <div className='pt-3'>
@@ -52,7 +46,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = () => {
         <div className='mt-4'>
           <h5 className='font-bold mb-1'>Date Posted:</h5>
           <p className='text-gray-800 text-sm'>
-            <Moment date={date} format='LL' />
+            <Moment date={new Date(createdAt)} format='LL' />
           </p>
         </div>
       </div>
@@ -163,3 +157,12 @@ const StyledDropdown = styled.div`
     top: 48px;
   }
 `;
+
+// const fakeItemInfo = {
+//   title: 'New title for the ad',
+//   location: 'Alabama',
+//   price: '30',
+//   description:
+//     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti dolore nulla vitae enim delectus sunt adipisci quia possimus alias ipsa libero veniam illo sit inventore perferendis ratione praesentium, officiis sed obcaecati eos exercitationem pariatur at aliquid accusantium. Quibusdam, odio nam?',
+//   date: new Date(),
+// };

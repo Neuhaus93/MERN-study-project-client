@@ -18,7 +18,7 @@ export type AllSocials =
   | 'linkedin';
 
 export type SocialsObjType = {
-  [K in AllSocials]?: string;
+  [K in AllSocials]?: string | null;
 } & {
   email: string;
 };

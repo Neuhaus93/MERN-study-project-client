@@ -2,6 +2,7 @@ query SearchPosts($searchTerm: String!) {
   searchPosts(term: $searchTerm) {
     _id
     creator {
+      _id
       fullName
     }
     title

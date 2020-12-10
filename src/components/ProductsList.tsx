@@ -3,7 +3,6 @@ import ContentLoader from 'react-content-loader';
 import { Link } from 'react-router-dom';
 import { ProductsQuery, useProductsQuery } from '../graphql/__generated__';
 import { ListTitle } from '../pages/ListTitle';
-import { IMAGE_FAKE_ARRAY } from '../util/images';
 
 export const ProductsList: React.FC<{}> = () => {
   const { data } = useProductsQuery();
@@ -26,9 +25,8 @@ interface ProductCardProps {
   product: ProductsQuery['products'][number];
 }
 
-const ProductCard: React.FC<ProductCardProps> = (props) => {
+export const ProductCard: React.FC<ProductCardProps> = (props) => {
   const { product } = props;
-  const randomIdx = Math.floor(Math.random() * IMAGE_FAKE_ARRAY.length);
 
   return (
     <div className='w-full max-w-sm overflow-hidden rounded border bg-white shadow'>
@@ -37,7 +35,7 @@ const ProductCard: React.FC<ProductCardProps> = (props) => {
           <div
             className='h-44 bg-cover bg-no-repeat bg-center overflow-hidden'
             style={{
-              backgroundImage: `url(${IMAGE_FAKE_ARRAY[randomIdx]})`,
+              backgroundImage: `url(${product.images[0]})`,
             }}></div>
         </Link>
         <div

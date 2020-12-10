@@ -31,7 +31,9 @@ export const PostScreen: React.FC<PostScreenProps> = ({ match }) => {
 
   // TODO: Change for a loading skeleton
   if (!data) {
-    return null;
+    return (
+      <DefaultWrapper className='container mb-6 px-3 lg:px-0 mx-auto xl:max-w-screen-xl'></DefaultWrapper>
+    );
   }
 
   return (
