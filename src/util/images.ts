@@ -13,3 +13,4 @@ export const IMAGE_FAKE_ARRAY = [
   'https://i.ibb.co/kJvK5k7/6.jpg',
   'https://i.ibb.co/0cBPNXL/7.jpg',
 ];
+export const IMAGE_LOGIN = 'https://i.ibb.co/TBRbKwg/login-image-960x640.jpg';

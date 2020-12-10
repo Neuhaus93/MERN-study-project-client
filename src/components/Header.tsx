@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Transition } from '@headlessui/react';
 import { FiSearch } from 'react-icons/fi';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 interface HeaderProps {}
@@ -21,7 +21,19 @@ const notSelectedStyle =
 
 export const Header: React.FC<HeaderProps> = () => {
   const [isOpen, setIsOpen] = useState(false);
+
+  // DEBUG
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const currentPage = 'Dashboard';
+
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth);
+  };
+  useEffect(() => {
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <nav className='bg-gray-800 relative'>
@@ -35,6 +47,8 @@ export const Header: React.FC<HeaderProps> = () => {
                 alt='Workflow'
               />
             </Link>
+            {/* TODO: REMOVE THIS TAG */}
+            <span className='text-white'>{windowWidth}</span>
             <div className='hidden md:block'>
               <div className='ml-10 flex items-baseline space-x-4'>
                 {NAV_PAGES.map((page, index) => {

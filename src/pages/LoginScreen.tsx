@@ -2,13 +2,9 @@ import { Form, Formik } from 'formik';
 import React from 'react';
 import { FormTextField } from '../components/FormFields';
 import { DefaultWrapper } from '../styles/Wrapper';
+import { IMAGE_LOGIN } from '../util/images';
 
 interface LoginScreenProps {}
-
-const imageUrl = 'https://i.ibb.co/mX1TjVb/3.jpg';
-
-// const imageUrl =
-//   'https://i.ibb.co/Ytq1LPD/doz-gabrial-D0fxuv-St-GD0-unsplash.jpg';
 
 export const LoginScreen: React.FC<LoginScreenProps> = () => {
   return (
@@ -17,9 +13,9 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
         <div className='w-full flex rounded-3xl overflow-hidden shadow-sm'>
           {/* Col */}
           <div
-            className='bg-gray-400 h-auto hidden lg:block lg:w-1/2 bg-cover'
+            className='bg-gray-400 h-auto hidden lg:block lg:w-1/2 bg-cover bg-center'
             style={{
-              backgroundImage: `url(${imageUrl})`,
+              backgroundImage: `url(${IMAGE_LOGIN})`,
             }}></div>
 
           {/* Col */}
@@ -48,11 +44,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
   );
 };
 
-// interface LoginValues {
-//   email: string;
-//   password: string;
-// }
-
 const LoginForm: React.FC = () => {
   const handleLogin = () => {
     console.log('login submited');
@@ -80,7 +71,7 @@ const LoginForm: React.FC = () => {
             type='password'
           />
           <button
-            className='w-full my-2 py-3 font-bold text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none focus:shadow-outline'
+            className='w-full my-2 py-3 font-bold text-white bg-blue-700 rounded-full hover:bg-blue-800 focus:outline-none focus:shadow-outline'
             type='submit'
             disabled={isSubmitting}>
             Log in

@@ -12,11 +12,21 @@ import { useAuth } from './hooks/useAuth';
 import { AdScreen } from './pages/AdScreen';
 import { HomeScreen } from './pages/HomeScreen';
 import { LoginScreen } from './pages/LoginScreen';
-import { ROUTE_AD, ROUTE_LANDING, ROUTE_LOGIN } from './util/routes';
+import { PostScreen } from './pages/PostScreen';
+import {
+  ROUTE_AD,
+  ROUTE_LANDING,
+  ROUTE_LOGIN,
+  ROUTE_POST,
+  ROUTE_REGISTER,
+} from './util/routes';
+import { GlobalStyles } from 'twin.macro';
+import { RegisterScreen } from './pages/RegisterScreen';
 
 export const App: React.FC = () => {
   return (
     <div className='App'>
+      <GlobalStyles />
       <BrowserRouter>
         <Header />
         <Switch>
@@ -25,11 +35,11 @@ export const App: React.FC = () => {
             component={LoginScreen}
             path={`${ROUTE_LOGIN}/:lastPath?`}
           />
+          <AuthRoute component={RegisterScreen} path={ROUTE_REGISTER} />
           <Route component={AdScreen} path={`${ROUTE_AD}/:id`} />
-          {/* <AuthRoute component={RegisterScreen} path={ROUTES.REGISTER} />
-          <PrivateRoute component={CreateAdScreen} path={ROUTES.CREATE_AD} />
+          <Route component={PostScreen} path={`${ROUTE_POST}/:postId`} />
+          {/* <PrivateRoute component={CreateAdScreen} path={ROUTES.CREATE_AD} />
           <PrivateRoute component={ProfileContainer} path={ROUTES.PROFILE} />
-          <Route component={PostScreen} path={`${ROUTES.POST}/:id`} />
           <Route component={SearchScreen} path={ROUTES.SEARCH} />
           <Route component={AllProductsScreen} path={ROUTES.ALL_PRODUCTS} />
           <Route component={AllPostsScreen} path={ROUTES.ALL_POSTS} />

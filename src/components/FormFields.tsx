@@ -26,7 +26,7 @@ export const FormTextField: React.FC<FormFieldProps> = (props) => {
         placeholder={placeholder}
       />
       <ErrorMessage
-        className='text-xs italic text-red-500'
+        className='text-xs text-red-600 pt-1 pl-1'
         name={field}
         component='div'
       />
