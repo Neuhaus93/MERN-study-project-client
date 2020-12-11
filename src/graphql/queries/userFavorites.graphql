@@ -4,7 +4,7 @@ query UserFavorites($favoritesList: [String!]!) {
     title
     description
     category
-    createdAt
     images
+    createdAt
   }
 }

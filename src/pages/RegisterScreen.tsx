@@ -2,7 +2,7 @@ import { Form, Formik } from 'formik';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
-import { FormTextField } from '../components/FormFields';
+import { FormTextField, FormikTextInput } from '../components/FormFields';
 import { DefaultWrapper } from '../styles/Wrapper';
 import { registerValidation } from '../util/forms-validation';
 import { IMAGE_REGISTER } from '../util/images';
@@ -75,31 +75,31 @@ const RegisterForm: React.FC = () => {
       onSubmit={handleRegister}>
       {({ isSubmitting }) => (
         <Form>
-          <FormTextField
+          <FormikTextInput
             field='firstName'
             label='First Name'
             placeholder='First Name'
             type='text'
           />
-          <FormTextField
+          <FormikTextInput
             field='lastName'
             label='Last Name'
             placeholder='Last Name'
             type='text'
           />
-          <FormTextField
+          <FormikTextInput
             field='email'
             label='Email'
             placeholder='Email'
             type='email'
           />
-          <FormTextField
+          <FormikTextInput
             field='password'
             label='Password'
             placeholder='************'
             type='password'
           />
-          <FormTextField
+          <FormikTextInput
             field='confirmPassword'
             label='Confirm Password'
             placeholder='************'

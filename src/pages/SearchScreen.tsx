@@ -1,5 +1,5 @@
 import queryString from 'query-string';
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { DefaultFilter } from '../components/Filters';
 import { PostCard } from '../components/PostsList';
@@ -10,7 +10,7 @@ import {
   useSearchPostsQuery,
   useSearchProductsQuery,
 } from '../graphql/__generated__';
-import { filtersReducer, initialFilters } from '../reducers/filters-reducer';
+import { useFilterReducer } from '../reducers/filters-reducer';
 import { StyledAllList } from '../styles/StyledAllList';
 import { DefaultWrapper } from '../styles/Wrapper';
 import { getCategoriesArray } from '../util/getCategoriesArray';
@@ -19,7 +19,7 @@ interface SearchScreenProps extends RouteComponentProps {}
 
 export const SearchScreen: React.FC<SearchScreenProps> = ({ location }) => {
   const searchTerm = (queryString.parse(location.search).q as string) || '';
-  const [filtersState, dispatch] = useReducer(filtersReducer, initialFilters);
+  const [filtersState, dispatch] = useFilterReducer();
   const [filteredProducts, setFilteredProducts] = useState<
     SearchProductsQuery['searchProducts']
   >([]);

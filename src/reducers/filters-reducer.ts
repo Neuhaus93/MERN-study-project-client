@@ -1,4 +1,6 @@
-export interface FiltersState {
+import { useReducer, Dispatch } from 'react';
+
+interface State {
   category: {
     tools: boolean;
     equipment: boolean;
@@ -6,13 +8,13 @@ export interface FiltersState {
   };
   location: string;
 }
-export type FiltersAction =
+type Actions =
   | { type: 'tools' }
   | { type: 'equipment' }
   | { type: 'software' }
   | { type: 'location'; payload: string };
 
-export const initialFilters: FiltersState = {
+const initialValues: State = {
   category: {
     tools: true,
     equipment: true,
@@ -21,7 +23,7 @@ export const initialFilters: FiltersState = {
   location: 'Everywhere',
 };
 
-export const filtersReducer = (state: FiltersState, action: FiltersAction) => {
+const filtersReducer = (state: State, action: Actions) => {
   switch (action.type) {
     case 'tools':
       return {
@@ -47,4 +49,10 @@ export const filtersReducer = (state: FiltersState, action: FiltersAction) => {
     default:
       return state;
   }
+};
+
+export type FilterUserState = State;
+export type FilterUserDispatch = Dispatch<Actions>;
+export const useFilterReducer = () => {
+  return useReducer(filtersReducer, initialValues);
 };

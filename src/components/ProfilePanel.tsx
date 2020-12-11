@@ -2,7 +2,8 @@ import { Transition } from '@headlessui/react';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { SIDEBAR_BUTTONS } from '../util/profile-buttons';
+import { ROUTE_LANDING } from '../util/routes';
+import { SIDEBAR_BUTTONS } from '../util/sidebar-buttons';
 import { SidebarBtnMobile } from './SidebarButton';
 import { UserImage } from './UserImage';
 
@@ -17,6 +18,7 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({
 }) => {
   const history = useHistory();
   const { mongoUser } = useAuth();
+  const { logout } = useAuth();
 
   return (
     <div
@@ -46,8 +48,8 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({
             leave='transform transition ease-in-out duration-500 sm:duration-700'
             leaveFrom='translate-x-0"'
             leaveTo='translate-x-full'>
-            <div className='relative w-screen max-w-md h-full pr-2'>
-              <div className='absolute top-0 left-0 -ml-8 pt-4 pr-2 flex sm:-ml-10 sm:pr-4'>
+            <div className='z-50 relative w-screen max-w-md h-full pr-2'>
+              <div className='z-50 absolute top-0 left-0 -ml-8 pt-4 pr-2 flex sm:-ml-10 sm:pr-4'>
                 <button
                   onClick={() => setIsOpen(false)}
                   className='rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white'>
@@ -69,7 +71,7 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({
                   </svg>
                 </button>
               </div>
-              <div className='h-full flex flex-col py-6 bg-white shadow-xl overflow-y-scroll'>
+              <div className='z-50 h-full flex flex-col py-6 bg-white shadow-xl overflow-y-scroll'>
                 <div className='px-4 sm:px-6 mx-auto'>
                   <UserImage size={20} isUser />
                   <h6 className='text-lg text-gray-900 text-center -ml-4 mt-2 -mb-1'>
@@ -87,6 +89,9 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({
                             Icon={button.Icon}
                             text={button.text}
                             cb={() => {
+                              if (button.url === ROUTE_LANDING) {
+                                logout();
+                              }
                               setIsOpen(false);
                               history.push(button.url);
                             }}

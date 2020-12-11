@@ -1,9 +1,10 @@
 import { FaUserCircle, FaHeart } from 'react-icons/fa';
-import { IoMdPricetag } from 'react-icons/io';
+import { IoMdPricetag, IoMdLogOut } from 'react-icons/io';
 import { MdCardMembership } from 'react-icons/md';
 import {
   ROUTE_EDIT_PROFILE,
   ROUTE_FAVORITES,
+  ROUTE_LANDING,
   ROUTE_MY_ADS,
 } from '../util/routes';
 
@@ -27,5 +28,10 @@ export const SIDEBAR_BUTTONS = [
     text: 'Subscription',
     Icon: MdCardMembership,
     url: '/#',
+  },
+  {
+    text: 'Sign Out',
+    Icon: IoMdLogOut,
+    url: ROUTE_LANDING,
   },
 ];

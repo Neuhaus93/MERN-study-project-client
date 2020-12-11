@@ -17,7 +17,7 @@ import { FourOhFourScreen } from './pages/FourOhFour';
 import { HomeScreen } from './pages/HomeScreen';
 import { LoginScreen } from './pages/LoginScreen';
 import { PostScreen } from './pages/PostScreen';
-import { ProfileContainer } from './pages/ProfileContainer';
+import { ProfileScreen } from './pages/ProfileScreen';
 import { RegisterScreen } from './pages/RegisterScreen';
 import { SearchScreen } from './pages/SearchScreen';
 import {
@@ -50,7 +50,7 @@ export const App: React.FC = () => {
           <Route component={SearchScreen} path={ROUTE_SEARCH} />
           <Route component={AllProductsScreen} path={ROUTE_ALL_PRODUCTS} />
           <Route component={AllPostsScreen} path={ROUTE_ALL_POSTS} />
-          <PrivateRoute component={ProfileContainer} path={ROUTE_PROFILE} />
+          <PrivateRoute component={ProfileScreen} path={ROUTE_PROFILE} />
           <Route component={FourOhFourScreen} />
           {/* <PrivateRoute component={CreateAdScreen} path={ROUTES.CREATE_AD} /> */}
         </Switch>

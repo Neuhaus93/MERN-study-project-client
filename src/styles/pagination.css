@@ -1,0 +1,7 @@
+.paginate ul {
+  @apply flex space-x-3;
+}
+
+.paginate .selected {
+  color: blue;
+}

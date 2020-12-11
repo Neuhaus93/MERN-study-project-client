@@ -28,10 +28,10 @@ const Wrapper = styled.div`
     width: 32px;
     height: 32px;
     margin: 4px;
-    border: 4px solid #002281;
+    border: 4px solid #486dd3;
     border-radius: 50%;
     animation: lds-ring 1.5s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    border-color: #002281 transparent transparent transparent;
+    border-color: #486dd3 transparent transparent transparent;
   }
   .lds-ring div:nth-child(1) {
     animation-delay: -0.45s;

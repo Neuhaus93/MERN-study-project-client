@@ -1,8 +1,8 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DefaultFilter } from '../components/Filters';
 import { ProductCard } from '../components/ProductsList';
 import { ProductsQuery, useProductsQuery } from '../graphql/__generated__';
-import { filtersReducer, initialFilters } from '../reducers/filters-reducer';
+import { useFilterReducer } from '../reducers/filters-reducer';
 import { StyledAllList } from '../styles/StyledAllList';
 import { DefaultWrapper } from '../styles/Wrapper';
 import { getCategoriesArray } from '../util/getCategoriesArray';
@@ -10,7 +10,7 @@ import { getCategoriesArray } from '../util/getCategoriesArray';
 interface AllProductsScreenProps {}
 
 export const AllProductsScreen: React.FC<AllProductsScreenProps> = () => {
-  const [filtersState, dispatch] = useReducer(filtersReducer, initialFilters);
+  const [filtersState, dispatch] = useFilterReducer();
   const [filteredProducts, setFilteredProducts] = useState<
     ProductsQuery['products']
   >([]);

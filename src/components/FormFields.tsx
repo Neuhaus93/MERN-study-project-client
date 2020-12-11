@@ -1,10 +1,13 @@
 import { Listbox, Transition } from '@headlessui/react';
-import { ErrorMessage, Field } from 'formik';
+import { ErrorMessage, Field, FieldAttributes } from 'formik';
 import React from 'react';
+import { IconType } from 'react-icons/lib';
+import tw, { styled } from 'twin.macro';
 
 interface FormFieldProps {
   field: string;
   label: string;
+  Icon?: IconType;
   placeholder?: string;
   type?: string;
 }
@@ -20,7 +23,7 @@ export const FormTextField: React.FC<FormFieldProps> = (props) => {
         {label}
       </label>
       <Field
-        className='w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:ring focus:border-blue-300 hover:border-gray-300'
+        className='w-full px-3 py-2 leading-tight text-sm text-gray-700 border rounded shadow appearance-none focus:outline-none focus:ring focus:border-blue-300 hover:border-gray-300'
         id={field}
         type={type}
         name={field}
@@ -156,3 +159,67 @@ export const SelectField: React.FC<SelectFieldProps> = (props) => {
     </Listbox>
   );
 };
+
+interface FormikTextInputProps extends FieldAttributes<any> {
+  Icon?: IconType;
+  pretext?: string;
+  pl?: number;
+}
+
+export const FormikTextInput: React.FC<FormikTextInputProps> = (props) => {
+  const { Icon, pretext, pl, ...fieldAtts } = props;
+
+  return (
+    <div className='flex flex-col mb-4'>
+      <label
+        htmlFor='name'
+        className='mb-2 text-sm tracking-wide font-bold text-gray-700'>
+        {fieldAtts.label}
+      </label>
+      <div className='relative'>
+        {Icon && (
+          <div className='absolute flex border border-transparent left-0 top-0 h-full w-12'>
+            <div className='flex items-center justify-center rounded-tl rounded-bl z-10 bg-gray-100 text-gray-600 text-lg h-full w-full'>
+              <Icon />
+            </div>
+          </div>
+        )}
+
+        {pretext && (
+          <PreText icon={!!Icon} pl={pl}>
+            {pretext}
+          </PreText>
+        )}
+
+        <StyledTextField
+          {...fieldAtts}
+          icon={Icon ? 'true' : ''}
+          id={fieldAtts.field}
+          name={fieldAtts.field}
+          pl={pl}
+        />
+      </div>{' '}
+      <ErrorMessage
+        className='text-xs font-semibold text-red-400 pt-1 pl-1'
+        name={fieldAtts.field}
+        component='div'
+      />
+    </div>
+  );
+};
+
+const PreText = styled.p<{ icon?: boolean; pl?: number }>`
+  ${({ icon }) => (icon ? tw`pl-14` : tw`pl-3`)}
+  ${tw`absolute flex items-center left-0 top-0 h-full text-gray-500 z-10`}
+`;
+
+/* ${({ pl }) => (pl && )} */
+const StyledTextField = styled(Field)`
+  ${({ icon }) => (icon ? tw`pl-14` : tw`pl-3`)}
+  padding-left: ${({ pl }) => pl && pl / 4 + 'rem'};
+  ${tw`text-sm relative w-full border rounded shadow-sm placeholder-gray-400 py-2 pr-3`}
+  ${tw`sm:(text-base)`}
+  ${tw`focus:(ring-2 outline-none)`}
+  ${tw`hover:(border-gray-300)`}
+  ${tw`disabled:text-gray-600`}
+`;

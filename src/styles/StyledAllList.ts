@@ -53,8 +53,8 @@ export const StledProfileContainer = styled.div`
   & .content {
     flex-basis: 100%;
     max-width: 1500px;
-    ${tw`mx-auto p-4`}
-    ${tw`sm:(w-8/12) p-8`};
+    ${tw`mx-auto p-3`}
+    ${tw`sm:(w-8/12 p-4)`};
     ${tw`md:(w-9/12)`};
     ${tw`xl:(w-10/12)`};
   }

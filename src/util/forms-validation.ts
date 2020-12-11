@@ -32,3 +32,26 @@ export const loginValidation = Yup.object({
     .max(15, 'Must be 15 characters or less')
     .required(requiredError),
 });
+
+export const editProfileValidation = Yup.object({
+  firstName: Yup.string()
+    .min(2, 'Must be 2 characters or more')
+    .max(20, 'Must be 20 characters or less')
+    .matches(usernameRegex, 'Only letters allowed'),
+  lastName: Yup.string()
+    .min(2, 'Must be 2 characters or more')
+    .max(20, 'Must be 20 characters or less')
+    .matches(usernameRegex, 'Only letters allowed'),
+  phoneNumber: Yup.string()
+    .min(2, 'Must be 2 characters or more')
+    .max(20, 'Must be 20 characters or less'),
+  facebook: Yup.string()
+    .min(2, 'Must be 2 characters or more')
+    .max(20, 'Must be 20 characters or less'),
+  linkedin: Yup.string()
+    .min(2, 'Must be 2 characters or more')
+    .max(20, 'Must be 20 characters or less'),
+  instagram: Yup.string()
+    .min(2, 'Must be 2 characters or more')
+    .max(20, 'Must be 20 characters or less'),
+});

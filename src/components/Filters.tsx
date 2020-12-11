@@ -1,12 +1,15 @@
 import React from 'react';
 import tw, { styled } from 'twin.macro';
-import { FiltersAction, FiltersState } from '../reducers/filters-reducer';
+import {
+  FilterUserDispatch,
+  FilterUserState,
+} from '../reducers/filters-reducer';
 import { STATES_US } from '../util/states-us';
 import { CheckboxField, SelectField } from './FormFields';
 
 interface FiltersProps {
-  filters: FiltersState;
-  dispatch: React.Dispatch<FiltersAction>;
+  filters: FilterUserState;
+  dispatch: FilterUserDispatch;
   categoryFilter?: boolean;
 }
 
