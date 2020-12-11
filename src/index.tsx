@@ -3,14 +3,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { App } from './AppRoutes';
 import { cache } from './cache';
+import { AuthProvider } from './contexts/auth-context';
 import './index.css';
 
 const uri = process.env.REACT_APP_API_URL;
-
-// const uri =
-//   process.env.NODE_ENV === 'development'
-//     ? 'http://localhost:4000/'
-//     : 'https://julianlist.herokuapp.com/';
 
 const client = new ApolloClient({
   cache,
@@ -22,7 +18,9 @@ const render = () => {
   ReactDOM.render(
     <React.StrictMode>
       <ApolloProvider client={client}>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </ApolloProvider>
     </React.StrictMode>,
     document.getElementById('root')

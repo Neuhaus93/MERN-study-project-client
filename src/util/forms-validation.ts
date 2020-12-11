@@ -24,3 +24,11 @@ export const registerValidation = Yup.object({
     .oneOf([Yup.ref('password')], 'Passwords must match')
     .required(requiredError),
 });
+
+export const loginValidation = Yup.object({
+  email: Yup.string().email('Invalid email address').required(requiredError),
+  password: Yup.string()
+    .min(8, 'Must be 8 characters or more')
+    .max(15, 'Must be 15 characters or less')
+    .required(requiredError),
+});

@@ -3,7 +3,7 @@ import ClickAwayListener from 'react-click-away-listener';
 import { FaHeart, FaShareAlt } from 'react-icons/fa';
 import { IoLocationSharp } from 'react-icons/io5';
 import Moment from 'react-moment';
-import styled from 'styled-components';
+import tw, { styled } from 'twin.macro';
 import { ProductQuery } from '../graphql/__generated__';
 import { AllSocials, helperFunctions, SOCIALS } from '../util/socials';
 import { InlineIcon } from './MyIcon';
@@ -13,7 +13,7 @@ interface ProductInfoProps {
 }
 
 export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
-  const { title, location, price, description, createdAt } = product;
+  const { title, location, price, description, createdAt, creator } = product;
 
   return (
     <div className='pt-3'>
@@ -34,7 +34,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         </div>
       </dl>
 
-      <Buttons />
+      <Buttons creator={creator} />
 
       <div className='mt-8'>
         <div>
@@ -54,7 +54,20 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   );
 };
 
-const Buttons: React.FC = () => {
+const Buttons: React.FC<{ creator: ProductQuery['product']['creator'] }> = ({
+  creator,
+}) => {
+  const socialsArr: Array<{
+    name: AllSocials;
+    url: string;
+  }> = [
+    { name: 'email', url: creator.email },
+    { name: 'phoneNumber', url: creator.socials.phoneNumber || '' },
+    { name: 'linkedin', url: creator.socials.linkedin || '' },
+    { name: 'instagram', url: creator.socials.instagram || '' },
+    { name: 'facebook', url: creator.socials.facebook || '' },
+  ];
+
   return (
     <div className='flex space-x-2 h-10 mt-5'>
       <button className='px-5 border rounded-md'>
@@ -63,7 +76,7 @@ const Buttons: React.FC = () => {
       <button className='px-5 border rounded-md'>
         <FaShareAlt className='opacity-90 text-blue-700' />
       </button>
-      <ReplyButton socials={[{ name: 'facebook', url: 'lucas-neuhaus/' }]} />
+      <ReplyButton socials={socialsArr} />
     </div>
   );
 };
@@ -108,12 +121,15 @@ const ReplyButton: React.FC<{ socials: SocialArrType }> = ({ socials }) => {
       <div className='relative h-full'>
         <button
           onClick={() => setOpen(!open)}
-          className='text-blue-50 bg-blue-800 border border-blue-200 w-full h-full rounded-md font-bold'>
+          className='btn text-blue-50 bg-blue-800 border border-blue-200 w-full h-full rounded-md font-bold hover:bg-blue-900'>
           Reply
         </button>
         {open && (
           <StyledDropdown className='bg-blue-50 shadow-md rounded-md'>
             {socials.map((social, index) => {
+              if (!social.url) {
+                return null;
+              }
               const LinkIcon = getLinkIcon(social.name);
               const { color, Icon: SocialIcon } = SOCIALS[social.name];
               const [shownValue, url] = getShownValueAndUrl(
@@ -126,13 +142,15 @@ const ReplyButton: React.FC<{ socials: SocialArrType }> = ({ socials }) => {
                     className='text-lg'
                     style={getStyle(color, true)}
                   />
-                  <p className='text-gray-900 mr-2 text-sm'>{shownValue}</p>
+                  <p className='text-gray-900 text-sm'>{shownValue}</p>
                   {LinkIcon && (
-                    <LinkIcon
-                      className='text-lg'
-                      style={getStyle(color)}
-                      onClick={() => window.open(url)}
-                    />
+                    <div className='ml-4 flex-1'>
+                      <LinkIcon
+                        className='text-lg'
+                        style={getStyle(color)}
+                        onClick={() => window.open(url)}
+                      />
+                    </div>
                   )}
                 </div>
               );
@@ -150,7 +168,7 @@ const StyledDropdown = styled.div`
   right: 0px;
   z-index: 1;
   white-space: nowrap;
-  padding: 1rem;
+  ${tw`flex flex-col space-y-3 p-5`}
 
   @media (min-width: 768px) {
     bottom: auto;

@@ -1,8 +1,12 @@
 import { Form, Formik } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import { FormTextField } from '../components/FormFields';
+import { useAuth } from '../hooks/useAuth';
 import { DefaultWrapper } from '../styles/Wrapper';
+import { loginValidation } from '../util/forms-validation';
 import { IMAGE_LOGIN } from '../util/images';
+import { ROUTE_REGISTER } from '../util/routes';
 
 interface LoginScreenProps {}
 
@@ -24,18 +28,18 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
             <LoginForm />
             <hr className='my-6 border-t mx-auto w-3/4' />
             <div className='text-center'>
-              <a
-                className='inline-block text-sm text-blue-500 align-baseline hover:text-blue-800'
-                href='./register.html'>
+              <Link
+                to={ROUTE_REGISTER}
+                className='inline-block text-sm text-blue-500 align-baseline hover:text-blue-800'>
                 Create an Account!
-              </a>
+              </Link>
             </div>
             <div className='text-center'>
-              <a
-                className='inline-block text-sm text-blue-500 align-baseline hover:text-blue-800'
-                href='./forgot-password.html'>
+              <Link
+                to={'/#'}
+                className='inline-block text-sm text-blue-500 align-baseline hover:text-blue-800'>
                 Forgot Password?
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -44,9 +48,29 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
   );
 };
 
-const LoginForm: React.FC = () => {
-  const handleLogin = () => {
-    console.log('login submited');
+const LoginForm: React.FC<{ lastPath?: string }> = ({ lastPath }) => {
+  const history = useHistory();
+  const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleLogin = async (values: { email: string; password: string }) => {
+    console.log('running');
+    setError('');
+    setLoading(true);
+
+    try {
+      await login(values.email, values.password);
+      if (lastPath) {
+        history.push('/' + lastPath.substring(1).replace(/-/g, '/'));
+      } else {
+        history.push('/');
+      }
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      setError('Invalid email or password');
+    }
   };
 
   return (
@@ -55,29 +79,29 @@ const LoginForm: React.FC = () => {
         email: '',
         password: '',
       }}
+      validationSchema={loginValidation}
       onSubmit={handleLogin}>
-      {({ isSubmitting }) => (
-        <Form>
-          <FormTextField
-            field='email'
-            label='Email'
-            placeholder='Enter Email...'
-            type='email'
-          />
-          <FormTextField
-            field='password'
-            label='Password'
-            placeholder='************'
-            type='password'
-          />
-          <button
-            className='w-full my-2 py-3 font-bold text-white bg-blue-700 rounded-full hover:bg-blue-800 focus:outline-none focus:shadow-outline'
-            type='submit'
-            disabled={isSubmitting}>
-            Log in
-          </button>
-        </Form>
-      )}
+      <Form>
+        <FormTextField
+          field='email'
+          label='Email'
+          placeholder='Enter Email...'
+          type='email'
+        />
+        <FormTextField
+          field='password'
+          label='Password'
+          placeholder='************'
+          type='password'
+        />
+        {error ? <p className='text-red-500 pl-1 text-sm'>{error}</p> : null}
+        <button
+          className='btn w-full my-2 font-bold text-white bg-blue-700 rounded-full hover:bg-blue-800 disabled:bg-blue-700'
+          type='submit'
+          disabled={loading}>
+          Log in
+        </button>
+      </Form>
     </Formik>
   );
 };

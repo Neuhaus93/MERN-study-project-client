@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 interface ListTitleProps {
   text: string;
@@ -9,9 +10,9 @@ export const ListTitle: React.FC<ListTitleProps> = ({ text, url }) => {
   return (
     <h3 className='text-xl mb-1'>
       {text}
-      <a href={url} className='text-blue-500 text-sm ml-4 hover:underline'>
+      <Link to={url} className='text-blue-500 text-sm ml-4 hover:underline'>
         See All
-      </a>
+      </Link>
     </h3>
   );
 };

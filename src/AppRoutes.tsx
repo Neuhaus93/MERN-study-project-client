@@ -17,6 +17,7 @@ import { FourOhFourScreen } from './pages/FourOhFour';
 import { HomeScreen } from './pages/HomeScreen';
 import { LoginScreen } from './pages/LoginScreen';
 import { PostScreen } from './pages/PostScreen';
+import { ProfileContainer } from './pages/ProfileContainer';
 import { RegisterScreen } from './pages/RegisterScreen';
 import { SearchScreen } from './pages/SearchScreen';
 import {
@@ -26,6 +27,7 @@ import {
   ROUTE_LANDING,
   ROUTE_LOGIN,
   ROUTE_POST,
+  ROUTE_PROFILE,
   ROUTE_REGISTER,
   ROUTE_SEARCH,
 } from './util/routes';
@@ -48,9 +50,9 @@ export const App: React.FC = () => {
           <Route component={SearchScreen} path={ROUTE_SEARCH} />
           <Route component={AllProductsScreen} path={ROUTE_ALL_PRODUCTS} />
           <Route component={AllPostsScreen} path={ROUTE_ALL_POSTS} />
+          <PrivateRoute component={ProfileContainer} path={ROUTE_PROFILE} />
           <Route component={FourOhFourScreen} />
-          {/* <PrivateRoute component={CreateAdScreen} path={ROUTES.CREATE_AD} />
-          <PrivateRoute component={ProfileContainer} path={ROUTES.PROFILE} /> */}
+          {/* <PrivateRoute component={CreateAdScreen} path={ROUTES.CREATE_AD} /> */}
         </Switch>
         <Footer />
       </BrowserRouter>
@@ -81,25 +83,25 @@ const AuthRoute = (props: CustomRouteProps) => {
   );
 };
 
-// const PrivateRoute = (props: CustomRouteProps) => {
-//   const { component: Component, ...rest } = props;
-//   const { currentUser } = useAuth();
+const PrivateRoute = (props: CustomRouteProps) => {
+  const { component: Component, ...rest } = props;
+  const { currentUser } = useAuth();
 
-//   return (
-//     <Route
-//       {...rest}
-//       render={(routeProps) =>
-//         currentUser ? (
-//           <Component {...routeProps} />
-//         ) : (
-//           <Redirect
-//             to={{
-//               pathname: ROUTE_LOGIN,
-//               state: { from: routeProps.location },
-//             }}
-//           />
-//         )
-//       }
-//     />
-//   );
-// };
+  return (
+    <Route
+      {...rest}
+      render={(routeProps) =>
+        currentUser ? (
+          <Component {...routeProps} />
+        ) : (
+          <Redirect
+            to={{
+              pathname: ROUTE_LOGIN,
+              state: { from: routeProps.location },
+            }}
+          />
+        )
+      }
+    />
+  );
+};
