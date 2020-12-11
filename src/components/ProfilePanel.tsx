@@ -3,7 +3,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import { SIDEBAR_BUTTONS } from '../util/profile-buttons';
-import { InlineIcon } from './MyIcon';
+import { SidebarBtnMobile } from './SidebarButton';
 import { UserImage } from './UserImage';
 
 interface ProfilePanelProps {
@@ -82,17 +82,15 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({
                     <div className='h-full' aria-hidden='true'>
                       <div className='flex flex-col space-y-4 mt-4 items-center'>
                         {SIDEBAR_BUTTONS.map((button) => (
-                          <div className='w-full pr-16 pl-10 flex items-center text-xl text-gray-800'>
-                            <button
-                              className='btn w-full h-full flex'
-                              onClick={() => {
-                                setIsOpen(false);
-                                history.push(button.url);
-                              }}>
-                              <InlineIcon Icon={button.Icon} />
-                              <p className='pl-4 text-lg'>{button.text}</p>
-                            </button>
-                          </div>
+                          <SidebarBtnMobile
+                            key={button.text}
+                            Icon={button.Icon}
+                            text={button.text}
+                            cb={() => {
+                              setIsOpen(false);
+                              history.push(button.url);
+                            }}
+                          />
                         ))}
                       </div>
                     </div>
