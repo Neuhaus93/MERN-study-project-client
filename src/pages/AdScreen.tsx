@@ -7,6 +7,7 @@ import { SellerInfo } from '../components/SellerInfo';
 import { useProductQuery } from '../graphql/__generated__';
 import '../styles/galleryCss.css';
 import { DefaultWrapper } from '../styles/Wrapper';
+import { IMAGE_NO_IMAGE } from '../util/images';
 
 interface AdScreenProps extends RouteComponentProps<{ id: string }> {}
 
@@ -31,19 +32,31 @@ export const AdScreen: React.FC<AdScreenProps> = ({ match }) => {
   return (
     <DefaultWrapper className='md:max-w-screen-md lg:max-w-screen-lg px-4 sm:px-8 pt-2 pb-4 mx-auto'>
       <div className='grid grid-cols-1 md:grid-cols-2 md:gap-12'>
-        <ImageGallery
-          items={data.product.images.map((e) => ({
-            original: e,
-            thumbnail: e,
-          }))}
-          showPlayButton={false}
-          slideDuration={410}
-          showFullscreenButton={false}
-        />
+        <div>
+          <ImageGallery
+            items={
+              data.product.images.length > 0
+                ? data.product.images.map((e) => ({
+                    original: e,
+                    thumbnail: e,
+                  }))
+                : [{ original: IMAGE_NO_IMAGE, thumbnail: IMAGE_NO_IMAGE }]
+            }
+            showPlayButton={false}
+            slideDuration={410}
+            showFullscreenButton={false}
+          />
+          <div className='hidden md:block'>
+            <Divider width={65} />
+            <SellerInfo seller={data.product.creator} />
+          </div>
+        </div>
         <div className='mt-2'>
           <ProductInfo product={data.product} />
-          <Divider width={65} />
-          <SellerInfo seller={data.product.creator} />
+          <div className='block md:hidden'>
+            <Divider width={65} />
+            <SellerInfo seller={data.product.creator} />
+          </div>
         </div>
       </div>
     </DefaultWrapper>

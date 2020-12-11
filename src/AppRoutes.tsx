@@ -11,6 +11,9 @@ import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { useAuth } from './hooks/useAuth';
 import { AdScreen } from './pages/AdScreen';
+import { AllPostsScreen } from './pages/AllPostsScreen';
+import { AllProductsScreen } from './pages/AllProductsScreen';
+import { FourOhFourScreen } from './pages/FourOhFour';
 import { HomeScreen } from './pages/HomeScreen';
 import { LoginScreen } from './pages/LoginScreen';
 import { PostScreen } from './pages/PostScreen';
@@ -18,6 +21,8 @@ import { RegisterScreen } from './pages/RegisterScreen';
 import { SearchScreen } from './pages/SearchScreen';
 import {
   ROUTE_AD,
+  ROUTE_ALL_POSTS,
+  ROUTE_ALL_PRODUCTS,
   ROUTE_LANDING,
   ROUTE_LOGIN,
   ROUTE_POST,
@@ -41,11 +46,11 @@ export const App: React.FC = () => {
           <Route component={AdScreen} path={`${ROUTE_AD}/:id`} />
           <Route component={PostScreen} path={`${ROUTE_POST}/:postId`} />
           <Route component={SearchScreen} path={ROUTE_SEARCH} />
+          <Route component={AllProductsScreen} path={ROUTE_ALL_PRODUCTS} />
+          <Route component={AllPostsScreen} path={ROUTE_ALL_POSTS} />
+          <Route component={FourOhFourScreen} />
           {/* <PrivateRoute component={CreateAdScreen} path={ROUTES.CREATE_AD} />
-          <PrivateRoute component={ProfileContainer} path={ROUTES.PROFILE} />
-          <Route component={AllProductsScreen} path={ROUTES.ALL_PRODUCTS} />
-          <Route component={AllPostsScreen} path={ROUTES.ALL_POSTS} />
-          <Route component={FourOhFourScreen} /> */}
+          <PrivateRoute component={ProfileContainer} path={ROUTES.PROFILE} /> */}
         </Switch>
         <Footer />
       </BrowserRouter>

@@ -3,25 +3,21 @@ import { Transition } from '@headlessui/react';
 import { FiSearch } from 'react-icons/fi';
 import React, { useEffect, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { ROUTE_SEARCH } from '../util/routes';
+import { ROUTE_LOGIN, ROUTE_REGISTER, ROUTE_SEARCH } from '../util/routes';
+import { useAuth } from '../hooks/useAuth';
 
 interface HeaderProps {}
 
-const NAV_PAGES = [
-  { title: 'Post an Ad', url: '/#' },
-  // { title: 'Team', url: '/#' },
-  // { title: 'Projects', url: '/#' },
-  // { title: 'Calendar', url: '/#' },
-  // { title: 'Reports', url: '/#' },
-];
+const NAV_PAGES = [{ title: 'Post an Ad', url: '/#' }];
 const NAV_PROFILE = ['Your Profile', 'Sign out'];
 const selectedStyle =
-  'bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700';
+  'bg-gray-900 hover:text-blue-100 text-white px-3 py-2 rounded-md text-sm font-medium hover:opacity-90';
 const notSelectedStyle =
   'text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium';
 
 export const Header: React.FC<HeaderProps> = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { mongoUser } = useAuth();
 
   // DEBUG
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
@@ -72,49 +68,7 @@ export const Header: React.FC<HeaderProps> = () => {
           <div className='hidden md:block'>
             <div className='ml-4 flex items-center md:ml-6'>
               <SearchBar />
-              {/* <!-- Profile dropdown --> */}
-              <div className='ml-3 relative'>
-                <div>
-                  <button
-                    className='max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white'
-                    id='user-menu'
-                    onClick={() => setIsOpen(!isOpen)}
-                    aria-haspopup='true'>
-                    <span className='sr-only'>Open user menu</span>
-                    <img
-                      className='h-8 w-8 rounded-full'
-                      src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
-                      alt=''
-                    />
-                  </button>
-                </div>
-                <Transition
-                  show={isOpen}
-                  enter='transition ease-out duration-100'
-                  enterFrom='transform opacity-0 scale-95'
-                  enterTo='transform opacity-100 scale-100'
-                  leave='transition ease-in duration-75'
-                  leaveFrom='transform opacity-100 scale-100'
-                  leaveTo='transform opacity-0 scale-95'>
-                  {(ref) => (
-                    <div
-                      ref={ref}
-                      className='z-10 origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5'
-                      role='menu'
-                      aria-orientation='vertical'
-                      aria-labelledby='user-menu'>
-                      {NAV_PROFILE.map((e, index) => (
-                        <a
-                          key={index}
-                          href='/#'
-                          className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'>
-                          {e}
-                        </a>
-                      ))}
-                    </div>
-                  )}
-                </Transition>
-              </div>
+              {mongoUser ? <LoggedIn /> : <LoggedOut />}
             </div>
           </div>
           <div className='-mr-2 flex md:hidden'>
@@ -263,5 +217,70 @@ const SearchBar: React.FC = () => {
         <FiSearch />
       </button>
     </StyledForm>
+  );
+};
+
+const LoggedIn: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className='ml-3 relative'>
+      <div>
+        <button
+          className='max-w-xs bg-gray-800 rounded-full flex items-center text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white'
+          id='user-menu'
+          onClick={() => setIsOpen(!isOpen)}
+          aria-haspopup='true'>
+          <span className='sr-only'>Open user menu</span>
+          <img
+            className='h-8 w-8 rounded-full'
+            src='https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80'
+            alt=''
+          />
+        </button>
+      </div>
+      <Transition
+        show={isOpen}
+        enter='transition ease-out duration-100'
+        enterFrom='transform opacity-0 scale-95'
+        enterTo='transform opacity-100 scale-100'
+        leave='transition ease-in duration-75'
+        leaveFrom='transform opacity-100 scale-100'
+        leaveTo='transform opacity-0 scale-95'>
+        {(ref) => (
+          <div
+            ref={ref}
+            className='z-10 origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5'
+            role='menu'
+            aria-orientation='vertical'
+            aria-labelledby='user-menu'>
+            {NAV_PROFILE.map((e, index) => (
+              <a
+                key={index}
+                href='/#'
+                className='block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100'>
+                {e}
+              </a>
+            ))}
+          </div>
+        )}
+      </Transition>
+    </div>
+  );
+};
+
+const LoggedOut: React.FC = () => {
+  return (
+    <div className='flex space-x-2 ml-2'>
+      <Link to={ROUTE_LOGIN}>
+        <button className='text-white hover:text-blue-100 text-sm font-medium px-3 py-2'>
+          Sign In
+        </button>
+      </Link>
+      <Link to={ROUTE_REGISTER}>
+        <button className='bg-gray-900 hover:text-blue-100 text-white px-3 py-2 rounded-md text-sm font-medium hover:opacity-90'>
+          Sign Up
+        </button>
+      </Link>
+    </div>
   );
 };

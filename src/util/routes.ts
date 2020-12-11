@@ -10,5 +10,5 @@ export const ROUTE_MY_ADS = '/profile/my-ads';
 export const ROUTE_POST = '/post';
 export const ROUTE_SEARCH = '/search';
 export const ROUTE_EDIT_PROFILE = '/profile/edit';
-export const ROUTE_ALL_PRODUCTS = '/all-products';
+export const ROUTE_ALL_PRODUCTS = '/all-ads';
 export const ROUTE_ALL_POSTS = '/all-posts';

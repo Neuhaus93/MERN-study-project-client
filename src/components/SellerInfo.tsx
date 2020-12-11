@@ -2,7 +2,7 @@ import React from 'react';
 import { ProductQuery } from '../graphql/__generated__';
 import { SocialsObjType } from '../util/socials';
 import { SocialBadges } from './SocialBadges';
-import { Image } from '../components/Image';
+import { MyImage } from '../components/MyImage';
 
 interface SellerInfoProps {
   seller: ProductQuery['product']['creator'];
@@ -21,7 +21,7 @@ export const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
   return (
     <div className='flex'>
       <div className='rounded-full bg-gray-300 h-16 w-16 overflow-hidden'>
-        {photo && <Image srcList={photo} alt='user' cover />}
+        {photo && <MyImage srcList={photo} alt='user' cover />}
       </div>
       <div className='flex flex-col justify-around ml-6'>
         <h6 className='text-sm font-semibold'>{fullName}</h6>
@@ -32,11 +32,3 @@ export const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
     </div>
   );
 };
-
-// const socialsObjj: SocialsObjType = {
-//   email: 'lucas.neuhaus@gmail.com',
-//   phoneNumber: '56 485-579',
-//   facebook: '/lucas-neuhaus',
-//   instagram: '/lucas',
-//   linkedin: '/lucas',
-// };

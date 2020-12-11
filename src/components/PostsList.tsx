@@ -4,16 +4,16 @@ import Moment from 'react-moment';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { PostsQuery, usePostsQuery } from '../graphql/__generated__';
-import { ListTitle } from '../pages/ListTitle';
 import {
   IMAGE_EQUIPMENT,
   IMAGE_NO_AD,
   IMAGE_SOFTWARE,
   IMAGE_TOOLS,
 } from '../util/images';
-import { ROUTE_POST } from '../util/routes';
-import { Image } from './Image';
+import { ROUTE_ALL_POSTS, ROUTE_POST } from '../util/routes';
+import { ListTitle } from './ListTitle';
 import { InlineIcon } from './MyIcon';
+import { MyImage } from './MyImage';
 
 interface PostsListProps {}
 
@@ -22,7 +22,7 @@ export const PostsList: React.FC<PostsListProps> = () => {
 
   return (
     <div className='mx-1 my-2'>
-      <ListTitle text='Latest Posts' url='/#' />
+      <ListTitle text='Latest Posts' url={ROUTE_ALL_POSTS} />
 
       {data &&
         data.posts.map((post) => <PostCard key={post._id} post={post} />)}
@@ -56,7 +56,7 @@ export const PostCard: React.FC<PostCardProps> = ({ post }) => {
   return (
     <StyledPostCard className='flex pr-2 py-1 border-t border-l border-r'>
       <div className='w-12 h-12 p-2 my-0 mr-3'>
-        <Image srcList={imgSrc} alt='post' title={imgTitle} />
+        <MyImage srcList={imgSrc} alt='post' title={imgTitle} />
       </div>
       <div className='flex flex-col justify-around'>
         <h4 className='font-bold'>

@@ -1,18 +1,20 @@
 import React from 'react';
 import tw, { styled } from 'twin.macro';
-import { FiltersAction, FiltersState } from '../pages/SearchScreen';
+import { FiltersAction, FiltersState } from '../reducers/filters-reducer';
 import { STATES_US } from '../util/states-us';
 import { CheckboxField, SelectField } from './FormFields';
 
 interface FiltersProps {
   filters: FiltersState;
   dispatch: React.Dispatch<FiltersAction>;
+  categoryFilter?: boolean;
 }
 
 export const DefaultFilter: React.FC<FiltersProps> = (props) => {
   const {
     filters: { category, location },
     dispatch,
+    categoryFilter,
   } = props;
   const { tools, equipment, software } = category;
 
@@ -41,16 +43,18 @@ export const DefaultFilter: React.FC<FiltersProps> = (props) => {
             />
           </div>
         </div>
-        <div className='mt-6 md:mt-8'>
-          <h6 className='text-gray-500 mb-2'>Filter by State</h6>
-          <SelectField
-            options={['Everywhere', ...STATES_US]}
-            selected={location}
-            setSelected={(value) =>
-              dispatch({ type: 'location', payload: value })
-            }
-          />
-        </div>
+        {categoryFilter && (
+          <div className='mt-6 md:mt-8'>
+            <h6 className='text-gray-500 mb-2'>Filter by State</h6>
+            <SelectField
+              options={['Everywhere', ...STATES_US]}
+              selected={location}
+              setSelected={(value) =>
+                dispatch({ type: 'location', payload: value })
+              }
+            />
+          </div>
+        )}
       </Filters>
     </div>
   );

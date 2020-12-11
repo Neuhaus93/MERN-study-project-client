@@ -2,14 +2,16 @@ import React from 'react';
 import ContentLoader from 'react-content-loader';
 import { Link } from 'react-router-dom';
 import { ProductsQuery, useProductsQuery } from '../graphql/__generated__';
-import { ListTitle } from '../pages/ListTitle';
+import { ROUTE_ALL_PRODUCTS } from '../util/routes';
+import { ListTitle } from './ListTitle';
+import { MyImage } from './MyImage';
 
 export const ProductsList: React.FC<{}> = () => {
   const { data } = useProductsQuery();
 
   return (
     <div className='mx-1 my-2'>
-      <ListTitle text='Latest Products' url='/#' />
+      <ListTitle text='Latest Ads' url={ROUTE_ALL_PRODUCTS} />
       <div className='grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-4 lg:gap-3 lg:grid-cols-5'>
         {data
           ? data.products.map((p) => {
@@ -32,11 +34,9 @@ export const ProductCard: React.FC<ProductCardProps> = (props) => {
     <div className='w-full max-w-sm overflow-hidden rounded border bg-white shadow'>
       <div className='relative'>
         <Link to={`ad/${product._id}`}>
-          <div
-            className='h-44 bg-cover bg-no-repeat bg-center overflow-hidden'
-            style={{
-              backgroundImage: `url(${product.images[0]})`,
-            }}></div>
+          <div className='h-44 overflow-hidden'>
+            <MyImage srcList={product.images[0]} alt='ad' cover />
+          </div>
         </Link>
         <div
           style={{ backgroundColor: 'rgba(0,0,0,0.75)' }}

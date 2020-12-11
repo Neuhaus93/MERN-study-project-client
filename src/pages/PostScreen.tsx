@@ -1,7 +1,12 @@
+import { Form, Formik } from 'formik';
 import React, { useState } from 'react';
+import Moment from 'react-moment';
 import { RouteComponentProps } from 'react-router-dom';
+import tw, { styled } from 'twin.macro';
+import { BlueBtn } from '../components/Buttons';
 import { CircularProgress } from '../components/CircularProgress';
 import { Divider } from '../components/Divider';
+import { MyImage } from '../components/MyImage';
 import {
   PostQuery,
   usePostQuery,
@@ -9,11 +14,7 @@ import {
 } from '../graphql/__generated__';
 import { useAuth } from '../hooks/useAuth';
 import { DefaultWrapper } from '../styles/Wrapper';
-import { Form, Formik } from 'formik';
-import Moment from 'react-moment';
 import { DATE_REPLY } from '../util/date-formats';
-import tw, { styled } from 'twin.macro';
-import { BlueBtn } from '../components/Buttons';
 
 interface PostScreenProps extends RouteComponentProps<{ postId: string }> {}
 
@@ -63,13 +64,13 @@ export const PostScreen: React.FC<PostScreenProps> = ({ match }) => {
           reply={reply}
         />
       ))}
-      <ForumForm />
+      <ForumForm postId={postId} />
     </DefaultWrapper>
   );
 };
 
 const ForumPost: React.FC<ForumPostProps> = (props) => {
-  const { postId, postNumber, isCreator, reply } = props;
+  const { postNumber, isCreator, reply } = props;
 
   return (
     <StyledForumPost className='box-border sm:flex'>
@@ -77,7 +78,9 @@ const ForumPost: React.FC<ForumPostProps> = (props) => {
 
       <div className='user'>
         <div className='user__image'>
-          <div className='w-full h-full'></div>
+          {reply.user.photo && (
+            <MyImage srcList={reply.user.photo} alt='user' cover />
+          )}
         </div>
         <p className='user__name'>{reply.user.fullName}</p>
         {isCreator && (
@@ -98,24 +101,26 @@ const ForumPost: React.FC<ForumPostProps> = (props) => {
   );
 };
 
-const ForumForm: React.FC = () => {
-  // const [replyPost, { loading: replyingPost }] = useReplyPostMutation();
+interface ForumFormProps {
+  postId: string;
+}
+
+const ForumForm: React.FC<ForumFormProps> = (props) => {
+  const { postId } = props;
+  const { mongoUser } = useAuth();
+  const [replyPost, { loading: replyingPost }] = useReplyPostMutation();
   const [newReply, setNewReply] = useState('');
 
   // Reply the post
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // if (!newReply || newReply === '' || postId === '' || !mongoUser) {
-    //   return;
-    // }
+    if (!newReply || newReply === '' || postId === '' || !mongoUser) {
+      return;
+    }
 
-    // await replyPost({
-    //   variables: {
-    //     postId,
-    //     userId: mongoUser._id,
-    //     body: newReply,
-    //   },
-    // });
+    await replyPost({
+      variables: { postId, userId: mongoUser._id, body: newReply },
+    });
     setNewReply('');
   };
 

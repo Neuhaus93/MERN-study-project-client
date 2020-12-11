@@ -2,6 +2,7 @@ export const IMAGE_BROKEN = 'https://i.ibb.co/ZW3qBxd/broken-image.png';
 export const IMAGE_TOOLS = 'https://i.ibb.co/KV9fJ4Z/tools.png';
 export const IMAGE_EQUIPMENT = 'https://i.ibb.co/ykn39hF/equipment.png';
 export const IMAGE_SOFTWARE = 'https://i.ibb.co/mbW9hKP/software.png';
+export const IMAGE_NO_IMAGE = 'https://i.ibb.co/nc22b4h/no-image.png';
 export const IMAGE_NO_FAVORITE = 'https://i.ibb.co/k5HgVW4/heart.png';
 export const IMAGE_NO_AD = 'https://i.ibb.co/dBSpzBQ/post-image.png';
 export const IMAGE_FAKE_ARRAY = [
@@ -14,3 +15,5 @@ export const IMAGE_FAKE_ARRAY = [
   'https://i.ibb.co/0cBPNXL/7.jpg',
 ];
 export const IMAGE_LOGIN = 'https://i.ibb.co/TBRbKwg/login-image-960x640.jpg';
+export const IMAGE_REGISTER =
+  'https://i.ibb.co/TLF6VTQ/register-page-600x789.jpg';

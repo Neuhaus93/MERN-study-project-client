@@ -1,12 +1,12 @@
 import { Form, Formik } from 'formik';
 import React from 'react';
+import { Link } from 'react-router-dom';
+import tw, { styled } from 'twin.macro';
 import { FormTextField } from '../components/FormFields';
 import { DefaultWrapper } from '../styles/Wrapper';
 import { registerValidation } from '../util/forms-validation';
-import { IMAGE_LOGIN } from '../util/images';
-import { Link } from 'react-router-dom';
+import { IMAGE_REGISTER } from '../util/images';
 import { ROUTE_LOGIN } from '../util/routes';
-import tw, { styled } from 'twin.macro';
 
 interface RegisterScreenProps {}
 
@@ -38,15 +38,15 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = () => {
 };
 
 const StyledRegisterCard = styled.div`
-  ${tw`w-full sm:max-w-screen-sm lg:max-w-screen-lg mx-4 sm:mx-auto`}
+  ${tw`w-full my-4 sm:max-w-screen-sm lg:max-w-screen-lg mx-4 sm:mx-auto`}
 
   & .left-col {
-    background-image: url(${IMAGE_LOGIN});
+    background-image: url(${IMAGE_REGISTER});
     ${tw`bg-gray-400 h-auto hidden lg:block lg:w-1/2 bg-cover bg-center`}
   }
 
   & .right-col {
-    height: 752px;
+    min-height: 688px;
     ${tw`flex flex-col justify-center bg-white w-full py-8 px-10`}
     ${tw`sm:(px-28 py-10)`}
     ${tw`lg:(w-1/2 py-12 px-16)`}
