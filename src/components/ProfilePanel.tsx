@@ -1,5 +1,9 @@
 import { Transition } from '@headlessui/react';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { SIDEBAR_BUTTONS } from '../util/profile-buttons';
+import { InlineIcon } from './MyIcon';
 import { UserImage } from './UserImage';
 
 interface ProfilePanelProps {
@@ -11,6 +15,9 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({
   isOpen,
   setIsOpen,
 }) => {
+  const history = useHistory();
+  const { mongoUser } = useAuth();
+
   return (
     <div
       style={{ zIndex: isOpen ? 20 : -1 }}
@@ -39,7 +46,7 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({
             leave='transform transition ease-in-out duration-500 sm:duration-700'
             leaveFrom='translate-x-0"'
             leaveTo='translate-x-full'>
-            <div className='relative w-screen max-w-md'>
+            <div className='relative w-screen max-w-md h-full pr-2'>
               <div className='absolute top-0 left-0 -ml-8 pt-4 pr-2 flex sm:-ml-10 sm:pr-4'>
                 <button
                   onClick={() => setIsOpen(false)}
@@ -63,16 +70,32 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({
                 </button>
               </div>
               <div className='h-full flex flex-col py-6 bg-white shadow-xl overflow-y-scroll'>
-                <div className='px-4 sm:px-6'>
-                  <UserImage size={2.75} isUser />
+                <div className='px-4 sm:px-6 mx-auto'>
+                  <UserImage size={20} isUser />
+                  <h6 className='text-lg text-gray-900 text-center -ml-4 mt-2 -mb-1'>
+                    {mongoUser?.fullName}
+                  </h6>
                 </div>
-                <div className='mt-6 relative flex-1 px-4 sm:px-6'>
+                <div className='mt-6 relative border-t flex-1 px-4 sm:px-6'>
                   {/* <!-- Replace with your content --> */}
                   <div className='absolute inset-0 px-4 sm:px-6'>
-                    <div
-                      className='h-full border-2 border-dashed border-gray-200'
-                      aria-hidden='true'></div>
-                    <h2 className='text-xl'>Testing</h2>
+                    <div className='h-full' aria-hidden='true'>
+                      <div className='flex flex-col space-y-4 mt-4 items-center'>
+                        {SIDEBAR_BUTTONS.map((button) => (
+                          <div className='w-full pr-16 pl-10 flex items-center text-xl text-gray-800'>
+                            <button
+                              className='btn w-full h-full flex'
+                              onClick={() => {
+                                setIsOpen(false);
+                                history.push(button.url);
+                              }}>
+                              <InlineIcon Icon={button.Icon} />
+                              <p className='pl-4 text-lg'>{button.text}</p>
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                   {/* <!-- /End replace --> */}
                 </div>
