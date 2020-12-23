@@ -20,12 +20,14 @@ import { LoginScreen } from './pages/LoginScreen';
 import { PostScreen } from './pages/PostScreen';
 import { ProfileScreen } from './pages/ProfileScreen';
 import { RegisterScreen } from './pages/RegisterScreen';
+import { EditAdScreen } from './pages/EditAdScreen';
 import { SearchScreen } from './pages/SearchScreen';
 import {
   ROUTE_AD,
   ROUTE_ALL_POSTS,
   ROUTE_ALL_PRODUCTS,
   ROUTE_CREATE_AD,
+  ROUTE_EDIT_AD,
   ROUTE_LANDING,
   ROUTE_LOGIN,
   ROUTE_POST,
@@ -54,6 +56,10 @@ export const App: React.FC = () => {
           <Route component={AllPostsScreen} path={ROUTE_ALL_POSTS} />
           <PrivateRoute component={ProfileScreen} path={ROUTE_PROFILE} />
           <PrivateRoute component={CreateAdScreen} path={ROUTE_CREATE_AD} />
+          <PrivateRoute
+            component={EditAdScreen}
+            path={`${ROUTE_EDIT_AD}/:productId`}
+          />
           <Route component={FourOhFourScreen} />
         </Switch>
         <Footer />

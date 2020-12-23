@@ -4,18 +4,22 @@ import tw, { styled } from 'twin.macro';
 
 interface Props {
   subscription: string | null;
-  images: File[];
-  setImages: React.Dispatch<React.SetStateAction<File[]>>;
-  initialImages?: string[];
-  setDeletedImages?: React.Dispatch<React.SetStateAction<string[]>>;
+  newImages: File[];
+  setNewImages: (images: File[]) => void;
+  existingImages?: string[];
+  setExistingImages?: (images: string[]) => void;
+  deletedImages?: string[];
+  setDeletedImages?: (deletedImages: string[]) => void;
 }
 
 export const ImageUploadContaienr: React.FC<Props> = (props) => {
   const {
     subscription,
-    images,
-    setImages,
-    initialImages,
+    newImages,
+    setNewImages,
+    existingImages = [],
+    setExistingImages,
+    deletedImages = [],
     setDeletedImages,
   } = props;
   const [picturesLimit, setPicturesLimit] = useState(8);
@@ -26,7 +30,7 @@ export const ImageUploadContaienr: React.FC<Props> = (props) => {
     const inputFiles = e.target.files;
 
     if (!inputFiles || inputFiles.length === 0) return;
-    const currentLength = [...images].length;
+    const currentLength = [...existingImages, ...newImages].length;
 
     if (inputFiles.length + currentLength > picturesLimit) {
       setError(`You can only upload a maximum of ${picturesLimit} pictures`);
@@ -37,20 +41,31 @@ export const ImageUploadContaienr: React.FC<Props> = (props) => {
     }
 
     setError('');
-    setImages(images.concat(fileListToArray(inputFiles)));
+    setNewImages(newImages.concat(fileListToArray(inputFiles)));
   };
 
   const handleDelete = (index: number) => {
     /**
-     * Deleting from the new image files */
-    const newImages = [...images];
-    newImages.splice(index, 1);
-    setImages(newImages);
-    setImagesMaxed(false);
+     * Deleting from the existing images
+     */
+    if (index < existingImages.length) {
+      const resultingImages = [...existingImages];
+      const deletedImage = resultingImages.splice(index, 1);
+
+      setDeletedImages && setDeletedImages([...deletedImages, deletedImage[0]]);
+      setExistingImages && setExistingImages(resultingImages);
+    } else {
+      /**
+       * Deleting from the new image files */
+      const resultingImages = [...newImages];
+      resultingImages.splice(index - existingImages.length, 1);
+      setNewImages(resultingImages);
+    }
 
     /**
      * Reseting the error message
      */
+    setImagesMaxed(false);
     setError('');
   };
 
@@ -59,9 +74,10 @@ export const ImageUploadContaienr: React.FC<Props> = (props) => {
       <div>
         <label className='text-input-label'>Photos</label>
         <div className='grid grid-cols-3 gap-3 sm:grid-cols-4'>
-          {images &&
-            [...images].map((image, index) => {
-              const src = URL.createObjectURL(image);
+          {newImages &&
+            [...existingImages, ...newImages].map((image, index) => {
+              const src =
+                typeof image === 'string' ? image : URL.createObjectURL(image);
               return (
                 <StyImgContainer key={index}>
                   <StyDeleteButton onClick={() => handleDelete(index)}>
@@ -78,8 +94,7 @@ export const ImageUploadContaienr: React.FC<Props> = (props) => {
           {!imagesMaxed && (
             <PhotoInput
               handleChange={handleChange}
-              images={images}
-              picturesLimit={picturesLimit}
+              disabled={!!(newImages && newImages.length > picturesLimit)}
               subscription={subscription}
             />
           )}
@@ -95,8 +110,7 @@ export const ImageUploadContaienr: React.FC<Props> = (props) => {
 
 interface PhotoInputProps {
   subscription: string | null;
-  images: File[];
-  picturesLimit: number;
+  disabled: boolean;
   handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
@@ -110,9 +124,7 @@ const PhotoInput: React.FC<PhotoInputProps> = (props) => (
         type='file'
         accept='image/*'
         multiple={props.subscription === 'paid'}
-        disabled={
-          !!(props.images && props.images?.length > props.picturesLimit)
-        }
+        disabled={props.disabled}
         onChange={props.handleChange}
       />
       <StyImgContainer>

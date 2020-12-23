@@ -3,13 +3,14 @@ import ClickAwayListener from 'react-click-away-listener';
 import { FaHeart, FaShareAlt } from 'react-icons/fa';
 import { IoLocationSharp } from 'react-icons/io5';
 import Moment from 'react-moment';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
 import { ProductQuery, useLikeProductMutation } from '../graphql/__generated__';
 import { useAuth } from '../hooks/useAuth';
-import { ROUTE_LOGIN } from '../util/routes';
+import { useProductButtonsReducer } from '../reducers/product-buttons-reducer';
+import { ROUTE_EDIT_AD } from '../util/routes';
 import { AllSocials, helperFunctions, SOCIALS } from '../util/socials';
-import { Modal, NotLoggedInModal } from './Modal';
+import { NotLoggedInModal } from './Modal';
 import { InlineIcon } from './MyIcon';
 
 interface ProductInfoProps {
@@ -65,37 +66,39 @@ interface ButtonsProps {
 
 const Buttons: React.FC<ButtonsProps> = (props) => {
   const { creator, productId } = props;
-  const history = useHistory();
-  const [likeProduct, { loading }] = useLikeProductMutation();
   const { mongoUser } = useAuth();
-  const [isLiked, setIsLiked] = useState(false);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const socialsArr: Array<{
-    name: AllSocials;
-    url: string;
-  }> = [
-    { name: 'email', url: creator.email },
-    { name: 'phoneNumber', url: creator.socials.phoneNumber || '' },
-    { name: 'linkedin', url: creator.socials.linkedin || '' },
-    { name: 'instagram', url: creator.socials.instagram || '' },
-    { name: 'facebook', url: creator.socials.facebook || '' },
-  ];
+  const [buttonState, dispatch] = useProductButtonsReducer();
+  const [likeProduct, { loading }] = useLikeProductMutation();
+  const { isLiked, modalIsOpen, socialsArr, isCreator } = buttonState;
+
+  /**
+   * Start socialsArray and isCreator
+   */
+  useEffect(() => {
+    dispatch({ type: 'setSocials', payload: creator });
+    if (mongoUser && creator._id === mongoUser._id) {
+      dispatch({ type: 'isCreator' });
+    }
+  }, [dispatch, mongoUser, creator]);
 
   /**
    *  Set like status
    */
   useEffect(() => {
     if (mongoUser) {
-      setIsLiked(mongoUser.likes?.includes(productId) || false);
+      dispatch({
+        type: 'setLikeProduct',
+        payload: !!mongoUser.likes?.includes(productId),
+      });
     }
-  }, [mongoUser, productId, isLiked]);
+  }, [mongoUser, productId, dispatch]);
 
   /**
    * Handle like button click
    */
   const handleLike = () => {
     if (!mongoUser) {
-      setModalIsOpen(true);
+      dispatch({ type: 'setIsModalOpen', payload: true });
       return;
     }
 
@@ -117,8 +120,21 @@ const Buttons: React.FC<ButtonsProps> = (props) => {
       <button className='px-5 border rounded-md'>
         <FaShareAlt className='opacity-90 text-blue-700' />
       </button>
-      <ReplyButton socials={socialsArr} />
-      <NotLoggedInModal isOpen={modalIsOpen} setIsOpen={setModalIsOpen} />
+      {isCreator ? (
+        <Link to={`${ROUTE_EDIT_AD}/${productId}`} className='w-full h-full'>
+          <button className='btn text-blue-50 bg-blue-800 border border-blue-200 w-full h-full rounded-md font-bold hover:bg-blue-900'>
+            Edit
+          </button>
+        </Link>
+      ) : (
+        <ReplyButton socials={socialsArr} />
+      )}
+      <NotLoggedInModal
+        isOpen={modalIsOpen}
+        setIsOpen={(isOpen: boolean) =>
+          dispatch({ type: 'setIsModalOpen', payload: isOpen })
+        }
+      />
     </div>
   );
 };

@@ -72,8 +72,8 @@ const CreateAdForm: React.FC = () => {
           </div>
           <div className='col-span-2'>
             <ImageUploadContaienr
-              images={images}
-              setImages={setImages}
+              newImages={images}
+              setNewImages={setImages}
               subscription='paid'
             />
           </div>
