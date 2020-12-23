@@ -1,13 +1,13 @@
 import { Form, Formik } from 'formik';
+import React, { useState } from 'react';
 import { FaTrash } from 'react-icons/fa';
-import React, { Dispatch, SetStateAction, useState } from 'react';
 import Moment from 'react-moment';
 import { RouteComponentProps, useHistory } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
 import { ButtonBlueFilled, ButtonRedOutline } from '../components/Buttons';
 import { Divider } from '../components/Divider';
 import { Modal, NotLoggedInModal } from '../components/Modal';
-import { MyImage } from '../components/MyImage';
+import { UserImage } from '../components/UserImage';
 import {
   PostQuery,
   PostsDocument,
@@ -21,7 +21,6 @@ import { useAuth } from '../hooks/useAuth';
 import { DefaultWrapper } from '../styles/Wrapper';
 import { DATE_REPLY } from '../util/date-formats';
 import { ROUTE_LANDING } from '../util/routes';
-import { UserImage } from '../components/UserImage';
 
 interface PostScreenProps extends RouteComponentProps<{ postId: string }> {}
 
