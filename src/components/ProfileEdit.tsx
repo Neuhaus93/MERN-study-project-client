@@ -1,4 +1,5 @@
 import { Form, Formik } from 'formik';
+import ContentLoader from 'react-content-loader';
 import React, { useEffect } from 'react';
 import { AiFillInstagram, AiFillLinkedin } from 'react-icons/ai';
 import { FaFacebookSquare, FaPhoneSquare } from 'react-icons/fa';
@@ -13,11 +14,17 @@ import { FormikTextInput } from './FormFields';
 interface ProfileEditProps {}
 
 export const ProfileEdit: React.FC<ProfileEditProps> = () => {
+  const { mongoUser } = useAuth();
+
   return (
     <div className='flex justify-center items-center h-full max-w-screen-sm mx-auto'>
-      <FormContainer title='Profile'>
-        <EditProfileForm />
-      </FormContainer>
+      {!mongoUser ? (
+        <Loading />
+      ) : (
+        <FormContainer title='Profile'>
+          <EditProfileForm />
+        </FormContainer>
+      )}
     </div>
   );
 };
@@ -76,10 +83,6 @@ const EditProfileForm: React.FC = () => {
     }
     dispatch({ type: 'finishLoading' });
   };
-
-  if (!mongoUser) {
-    return <p>Loading...</p>;
-  }
 
   return (
     <Formik
@@ -148,7 +151,7 @@ const EditProfileForm: React.FC = () => {
           )}
           <div className='flex justify-center mt-6'>
             <button
-              className='btn w-full my-2 font-bold text-white bg-blue-700 rounded-full hover:bg-blue-800 disabled:bg-blue-700 max-w-sm'
+              className='btn w-full my-2 font-bold text-white bg-blue-700 rounded-full hover:bg-blue-800 disabled:bg-blue-700 max-w-xs'
               type='submit'
               disabled={isLoading || !props.dirty}>
               Edit Profile
@@ -159,3 +162,15 @@ const EditProfileForm: React.FC = () => {
     </Formik>
   );
 };
+
+const Loading: React.FC = () => (
+  <div className='max-w-screen-sm my-4 mx-auto'>
+    <ContentLoader
+      preserveAspectRatio='xMinYMin'
+      speed={2}
+      height={700}
+      className='overflow-hidden w-full px-1'>
+      <rect x='0' y='0' rx='8' ry='8' width='100%' height='700' />
+    </ContentLoader>
+  </div>
+);
