@@ -1,7 +1,80 @@
-import tw from 'twin.macro';
+import React from 'react';
 
-export const BlueBtn = tw.button`
-  inline-flex items-center px-6 py-2 border border-transparent 
-  rounded-md shadow-sm text-sm font-medium text-white bg-blue-700 
-  hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
-`;
+interface CustomButton
+  extends Omit<
+    React.DetailedHTMLProps<
+      React.ButtonHTMLAttributes<HTMLButtonElement>,
+      HTMLButtonElement
+    >,
+    'className'
+  > {
+  className?: string;
+}
+
+const buttonDefault =
+  'text-base font-semibold px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50';
+
+export const ButtonBlueLight: React.FC<CustomButton> = ({
+  children,
+  className: extraClasses,
+  ...props
+}) => (
+  <button
+    type='button'
+    className={`${buttonDefault} bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800 ${extraClasses}`}
+    {...props}>
+    {children}
+  </button>
+);
+
+export const ButtonBlueOutline: React.FC<CustomButton> = ({
+  children,
+  className: extraClasses,
+  ...props
+}) => (
+  <button
+    type='button'
+    className={`${buttonDefault} bg-blue-50 text-blue-700 hover:bg-blue-100 hover:text-blue-800 border border-blue-300 ${extraClasses}`}
+    {...props}>
+    {children}
+  </button>
+);
+
+export const ButtonBlueFilled: React.FC<CustomButton> = ({
+  children,
+  className: extraClasses,
+  ...props
+}) => (
+  <button
+    type='button'
+    className={`${buttonDefault} border border-transparent shadow-sm text-white bg-blue-600 hover:bg-blue-700 ${extraClasses}`}
+    {...props}>
+    {children}
+  </button>
+);
+
+export const ButtonBlueGhost: React.FC<CustomButton> = ({
+  children,
+  className: extraClasses,
+  ...props
+}) => (
+  <button
+    type='button'
+    className={`${buttonDefault} border border-transparent text-blue-700 bg-white hover:text-blue-800 hover:bg-blue-50 ${extraClasses}`}
+    {...props}>
+    {children}
+  </button>
+);
+
+export const ButtonRedOutline: React.FC<CustomButton> = ({
+  children,
+  className: extraClasses,
+  ...props
+}) => (
+  <button
+    type='button'
+    className={`${buttonDefault} text-red-700 hover:bg-red-50 hover:text-red-800 border border-red-300 ${extraClasses}`}
+    {...props}>
+    {children}
+  </button>
+);

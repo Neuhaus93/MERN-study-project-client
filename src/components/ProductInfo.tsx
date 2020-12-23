@@ -3,9 +3,13 @@ import ClickAwayListener from 'react-click-away-listener';
 import { FaHeart, FaShareAlt } from 'react-icons/fa';
 import { IoLocationSharp } from 'react-icons/io5';
 import Moment from 'react-moment';
+import { useHistory } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
-import { ProductQuery } from '../graphql/__generated__';
+import { ProductQuery, useLikeProductMutation } from '../graphql/__generated__';
+import { useAuth } from '../hooks/useAuth';
+import { ROUTE_LOGIN } from '../util/routes';
 import { AllSocials, helperFunctions, SOCIALS } from '../util/socials';
+import { Modal, NotLoggedInModal } from './Modal';
 import { InlineIcon } from './MyIcon';
 
 interface ProductInfoProps {
@@ -23,7 +27,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
           <dt className='sr-only'>Location</dt>
           <dd className='flex'>
             <InlineIcon Icon={IoLocationSharp} />
-            <p>{location}</p>
+            <p className='ml-1'>{location}</p>
           </dd>
         </div>
         <div className='bg-red-100 text-red-900 px-2 py-0.5 rounded-md ml-4'>
@@ -34,7 +38,7 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
         </div>
       </dl>
 
-      <Buttons creator={creator} />
+      <Buttons creator={creator} productId={product._id} />
 
       <div className='mt-8'>
         <div>
@@ -54,9 +58,18 @@ export const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
   );
 };
 
-const Buttons: React.FC<{ creator: ProductQuery['product']['creator'] }> = ({
-  creator,
-}) => {
+interface ButtonsProps {
+  creator: ProductQuery['product']['creator'];
+  productId: string;
+}
+
+const Buttons: React.FC<ButtonsProps> = (props) => {
+  const { creator, productId } = props;
+  const history = useHistory();
+  const [likeProduct, { loading }] = useLikeProductMutation();
+  const { mongoUser } = useAuth();
+  const [isLiked, setIsLiked] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const socialsArr: Array<{
     name: AllSocials;
     url: string;
@@ -68,15 +81,44 @@ const Buttons: React.FC<{ creator: ProductQuery['product']['creator'] }> = ({
     { name: 'facebook', url: creator.socials.facebook || '' },
   ];
 
+  /**
+   *  Set like status
+   */
+  useEffect(() => {
+    if (mongoUser) {
+      setIsLiked(mongoUser.likes?.includes(productId) || false);
+    }
+  }, [mongoUser, productId, isLiked]);
+
+  /**
+   * Handle like button click
+   */
+  const handleLike = () => {
+    if (!mongoUser) {
+      setModalIsOpen(true);
+      return;
+    }
+
+    likeProduct({
+      variables: { userId: mongoUser._id, productId },
+    });
+  };
+
   return (
     <div className='flex space-x-2 h-10 mt-5'>
-      <button className='px-5 border rounded-md'>
-        <FaHeart className='opacity-50' />
+      <button
+        className={`transition-all px-5 border rounded-md disabled:opacity-60 ${
+          isLiked && ` bg-red-400`
+        }`}
+        onClick={handleLike}
+        disabled={loading}>
+        <FaHeart className={isLiked ? 'opacity-40' : 'opacity-50'} />
       </button>
       <button className='px-5 border rounded-md'>
         <FaShareAlt className='opacity-90 text-blue-700' />
       </button>
       <ReplyButton socials={socialsArr} />
+      <NotLoggedInModal isOpen={modalIsOpen} setIsOpen={setModalIsOpen} />
     </div>
   );
 };

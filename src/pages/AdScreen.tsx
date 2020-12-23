@@ -12,11 +12,6 @@ import { IMAGE_NO_IMAGE } from '../util/images';
 
 interface AdScreenProps extends RouteComponentProps<{ id: string }> {}
 
-// const images: ReactImageGalleryItem[] = IMAGE_FAKE_ARRAY.map((image) => ({
-//   original: image,
-//   thumbnail: image,
-// }));
-
 export const AdScreen: React.FC<AdScreenProps> = ({ match }) => {
   const productId = match.params.id;
   const { data, error } = useProductQuery({ variables: { productId } });

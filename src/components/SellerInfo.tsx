@@ -21,9 +21,6 @@ export const SellerInfo: React.FC<SellerInfoProps> = ({ seller }) => {
   return (
     <div className='flex'>
       <UserImage size={16} src={photo} />
-      {/* <div className='rounded-full bg-gray-300 h-16 w-16 overflow-hidden'>
-        {photo && <MyImage srcList={photo} alt='user' cover />}
-      </div> */}
       <div className='flex flex-col justify-around ml-6'>
         <h6 className='text-sm font-semibold'>{fullName}</h6>
         <div className='flex space-x-2'>

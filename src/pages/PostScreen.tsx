@@ -1,29 +1,29 @@
 import { Form, Formik } from 'formik';
-import React, { useState } from 'react';
+import { FaTrash } from 'react-icons/fa';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import Moment from 'react-moment';
-import { RouteComponentProps } from 'react-router-dom';
+import { RouteComponentProps, useHistory } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
-import { BlueBtn } from '../components/Buttons';
-import { CircularProgress } from '../components/CircularProgress';
+import { ButtonBlueFilled, ButtonRedOutline } from '../components/Buttons';
 import { Divider } from '../components/Divider';
+import { Modal, NotLoggedInModal } from '../components/Modal';
 import { MyImage } from '../components/MyImage';
 import {
   PostQuery,
+  PostsDocument,
+  PostsQuery,
+  useDeletePostMutation,
+  useDeleteReplyMutation,
   usePostQuery,
   useReplyPostMutation,
 } from '../graphql/__generated__';
 import { useAuth } from '../hooks/useAuth';
 import { DefaultWrapper } from '../styles/Wrapper';
 import { DATE_REPLY } from '../util/date-formats';
+import { ROUTE_LANDING } from '../util/routes';
+import { UserImage } from '../components/UserImage';
 
 interface PostScreenProps extends RouteComponentProps<{ postId: string }> {}
-
-interface ForumPostProps {
-  postId: string;
-  postNumber: number;
-  isCreator: boolean;
-  reply: PostQuery['post']['replies'][number];
-}
 
 export const PostScreen: React.FC<PostScreenProps> = ({ match }) => {
   const { postId } = match.params;
@@ -59,7 +59,7 @@ export const PostScreen: React.FC<PostScreenProps> = ({ match }) => {
         <ForumPost
           key={reply._id}
           postId={data.post._id}
-          isCreator={data.post.creator._id === mongoUser?._id}
+          isCreator={data.post.replies[index].user._id === mongoUser?._id}
           postNumber={index + 2}
           reply={reply}
         />
@@ -69,23 +69,78 @@ export const PostScreen: React.FC<PostScreenProps> = ({ match }) => {
   );
 };
 
+interface ForumPostProps {
+  postId: string;
+  postNumber: number;
+  isCreator: boolean;
+  reply: PostQuery['post']['replies'][number];
+}
+
 const ForumPost: React.FC<ForumPostProps> = (props) => {
-  const { postNumber, isCreator, reply } = props;
+  const { postId, postNumber, isCreator, reply } = props;
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [deleteReply, { loading: deletingReply }] = useDeleteReplyMutation();
+  const [deletePost, { loading: deletingPost }] = useDeletePostMutation();
+  const { mongoUser } = useAuth();
+  const history = useHistory();
+
+  const handleDelete = async () => {
+    if (postId === reply._id) {
+      if (mongoUser) {
+        await deletePost({
+          variables: {
+            postId,
+            userId: mongoUser._id,
+          },
+          update: (cache, { data }) => {
+            if (!data) return;
+            const { deletePost } = data;
+            const postsQuery = cache.readQuery<PostsQuery>({
+              query: PostsDocument,
+            });
+            if (!postsQuery) return;
+
+            cache.writeQuery<PostsQuery>({
+              query: PostsDocument,
+              data: {
+                posts: postsQuery.posts.filter(
+                  (post) => post._id !== deletePost._id
+                ),
+              },
+            });
+          },
+        });
+        history.push(ROUTE_LANDING);
+      }
+    } else {
+      await deleteReply({
+        variables: {
+          postId,
+          replyId: reply._id,
+        },
+      });
+    }
+  };
+
+  const handleClick = () => {
+    setModalIsOpen(true);
+  };
 
   return (
     <StyledForumPost className='box-border sm:flex'>
-      {/* TODO: Add Alert Dialog */}
-
       <div className='user'>
         <div className='user__image'>
-          {reply.user.photo && (
-            <MyImage srcList={reply.user.photo} alt='user' cover />
-          )}
+          <UserImage square src={reply.user.photo} />
         </div>
         <p className='user__name'>{reply.user.fullName}</p>
         {isCreator && (
-          <div className='text-red-400 p-2 ml-auto'>
-            <button>Delete</button>
+          <div className='inline-flex justify-center items-center pt-2'>
+            <ButtonRedOutline
+              className='opacity-70 mb-2'
+              onClick={handleClick}
+              disabled={deletingReply || deletingPost}>
+              <FaTrash />
+            </ButtonRedOutline>
           </div>
         )}
       </div>
@@ -97,6 +152,14 @@ const ForumPost: React.FC<ForumPostProps> = (props) => {
         </div>
         <span className='content__body'>{reply.body || ''}</span>
       </div>
+      <Modal
+        isOpen={modalIsOpen}
+        setIsOpen={setModalIsOpen}
+        text='Are you sure you want to delete?'
+        actionText='Delete'
+        loading={deletingReply || deletingPost}
+        handleAction={handleDelete}
+      />
     </StyledForumPost>
   );
 };
@@ -110,11 +173,18 @@ const ForumForm: React.FC<ForumFormProps> = (props) => {
   const { mongoUser } = useAuth();
   const [replyPost, { loading: replyingPost }] = useReplyPostMutation();
   const [newReply, setNewReply] = useState('');
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
   // Reply the post
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    if (!newReply || newReply === '' || postId === '' || !mongoUser) {
+  const handleSubmit = async ({ reply }: { reply: string }) => {
+    /** Checks if user is logged in */
+    if (!mongoUser) {
+      setModalIsOpen(true);
+      return;
+    }
+
+    /** Handle edge cases */
+    if (!newReply || newReply === '' || postId === '') {
       return;
     }
 
@@ -125,21 +195,22 @@ const ForumForm: React.FC<ForumFormProps> = (props) => {
   };
 
   return (
-    <Formik initialValues={{ reply: '' }} onSubmit={console.log}>
-      {({ isSubmitting }) => (
-        <StyledReplyForm onSubmit={handleSubmit}>
+    <>
+      <Formik initialValues={{ reply: '' }} onSubmit={handleSubmit}>
+        <StyledReplyForm>
           <textarea
             rows={8}
             placeholder='Write your reply'
             onChange={(e) => setNewReply(e.target.value)}
             value={newReply}
           />
-          <BlueBtn type='submit' disabled={isSubmitting}>
-            {isSubmitting ? <CircularProgress /> : 'Reply'}
-          </BlueBtn>
+          <ButtonBlueFilled type='submit' disabled={replyingPost}>
+            REPLY
+          </ButtonBlueFilled>
         </StyledReplyForm>
-      )}
-    </Formik>
+      </Formik>
+      <NotLoggedInModal isOpen={modalIsOpen} setIsOpen={setModalIsOpen} />
+    </>
   );
 };
 
