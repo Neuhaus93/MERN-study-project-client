@@ -1,18 +1,31 @@
 import { Form, Formik } from 'formik';
-import React, { useState } from 'react';
-import tw, { styled } from 'twin.macro';
 import _ from 'lodash';
+import React from 'react';
+import { useHistory } from 'react-router-dom';
+import tw, { styled } from 'twin.macro';
+import { FormContainer } from '../components/FormContainer';
 import {
   FormikCostField,
   FormikTextInput,
   SelectField,
 } from '../components/FormFields';
+import { ImageUploadContaienr } from '../components/ImageUploadContaienr';
+import {
+  CreateProductInput,
+  ProductsDocument,
+  useAddProductImageMutation,
+  useCreateProductMutation,
+  UserProductsDocument,
+  UserProductsQuery,
+  UserProductsQueryVariables,
+} from '../graphql/__generated__';
+import { useAuth } from '../hooks/useAuth';
+import { useStorage } from '../hooks/useStorage';
+import { useCreateAdReducer } from '../reducers/create-ad-reducer';
 import { DefaultWrapper } from '../styles/Wrapper';
 import { CATEGORIES } from '../util/constants';
 import { createAdValidation } from '../util/forms-validation';
 import { STATES_US } from '../util/states-us';
-import { FormContainer } from '../components/FormContainer';
-import { ImageUploadContaienr } from '../components/ImageUploadContaienr';
 
 export const CreateAdScreen: React.FC = () => {
   return (
@@ -25,12 +38,80 @@ export const CreateAdScreen: React.FC = () => {
 };
 
 const CreateAdForm: React.FC = () => {
-  const [images, setImages] = useState<File[]>([]);
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
+  const { mongoUser } = useAuth();
+  const [{ images, error, loading }, dispatch] = useCreateAdReducer();
+  const [createProduct] = useCreateProductMutation();
+  const [addProductImages] = useAddProductImageMutation();
+  const { uploadMultipleFiles } = useStorage();
+  const history = useHistory();
 
-  const handleSubmit = (values: typeof initialValues) => {
-    console.log(values);
+  const handleSubmit = async (values: typeof initialValues) => {
+    if (!mongoUser) return;
+
+    dispatch({ type: 'startLoading' });
+    const createProductInput: CreateProductInput = {
+      ...values,
+      userId: mongoUser._id,
+    };
+
+    const { data, errors: creatingError } = await createProduct({
+      variables: { createProductInput },
+      refetchQueries: [
+        { query: ProductsDocument, variables: { category: '' } },
+      ],
+      update: (cache, { data }) => {
+        if (!data) {
+          return;
+        }
+        const userProductsQuery = cache.readQuery<
+          UserProductsQuery,
+          UserProductsQueryVariables
+        >({
+          query: UserProductsDocument,
+          variables: {
+            userId: mongoUser._id,
+          },
+        });
+        if (!userProductsQuery) {
+          return;
+        }
+
+        cache.writeQuery<UserProductsQuery, UserProductsQueryVariables>({
+          query: UserProductsDocument,
+          variables: {
+            userId: mongoUser._id,
+          },
+          data: {
+            userProducts: [
+              data.createProduct,
+              ...userProductsQuery.userProducts,
+            ],
+          },
+        });
+      },
+    });
+
+    if (creatingError) return;
+
+    if (data) {
+      const productId = data.createProduct._id;
+      if (images.length === 0) {
+        history.push(`ad/${productId}`);
+      }
+
+      const newImagesUrl = await uploadMultipleFiles(images, productId);
+      try {
+        await addProductImages({
+          variables: {
+            productId,
+            imagesSrc: newImagesUrl,
+          },
+        });
+        history.push(`ad/${productId}`);
+      } catch (err) {
+        console.log(err.code);
+      }
+    }
   };
 
   return (
@@ -44,7 +125,12 @@ const CreateAdForm: React.FC = () => {
             <FormikTextInput field='title' label='Post Title' />
           </div>
           <div className='col-span-1'>
-            <FormikCostField label='Cost' name='price' maxLength={10} />
+            <FormikCostField
+              label='Cost'
+              name='price'
+              maxLength={10}
+              placeholder='$ 1,000'
+            />
           </div>
           <div className='col-span-1'>
             <SelectField
@@ -73,7 +159,9 @@ const CreateAdForm: React.FC = () => {
           <div className='col-span-2'>
             <ImageUploadContaienr
               newImages={images}
-              setNewImages={setImages}
+              setNewImages={(payload) =>
+                dispatch({ type: 'setImages', payload })
+              }
               subscription='paid'
             />
           </div>
