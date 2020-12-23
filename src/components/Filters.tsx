@@ -51,8 +51,8 @@ export const DefaultFilter: React.FC<FiltersProps> = (props) => {
             <h6 className='text-gray-500 mb-2'>Filter by State</h6>
             <SelectField
               options={['Everywhere', ...STATES_US]}
-              selected={location}
-              setSelected={(value) =>
+              value={location}
+              onChange={(value) =>
                 dispatch({ type: 'location', payload: value })
               }
             />

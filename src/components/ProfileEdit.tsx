@@ -7,6 +7,7 @@ import { useUpdateUserMutation } from '../graphql/__generated__';
 import { useAuth } from '../hooks/useAuth';
 import { useEditUserReducer } from '../reducers/edit-profile-reducer';
 import { editProfileValidation } from '../util/forms-validation';
+import { FormContainer } from './FormContainer';
 import { FormikTextInput } from './FormFields';
 
 interface ProfileEditProps {}
@@ -14,10 +15,9 @@ interface ProfileEditProps {}
 export const ProfileEdit: React.FC<ProfileEditProps> = () => {
   return (
     <div className='flex justify-center items-center h-full max-w-screen-sm mx-auto'>
-      <div className='border bg-white w-full py-8 sm:py-10 lg:py-8 px-2 sm:px-4 md:px-8 lg:px-16 rounded-3xl shadow-sm'>
-        <h2 className='text-center text-2xl mb-6 font-semibold'>Profile</h2>
+      <FormContainer title='Profile'>
         <EditProfileForm />
-      </div>
+      </FormContainer>
     </div>
   );
 };
@@ -38,20 +38,7 @@ const EditProfileForm: React.FC = () => {
   const [updateUser] = useUpdateUserMutation();
 
   const handleEditProfile = async (values: FormValues, actions: any) => {
-    // setError('');
-    // setLoading(true);
-    // try {
-    //   await login(values.email, values.password);
-    //   if (lastPath) {
-    //     history.push('/' + lastPath.substring(1).replace(/-/g, '/'));
-    //   } else {
-    //     history.push('/');
-    //   }
-    // } catch (err) {
-    //   console.log(err);
-    //   setLoading(false);
-    //   setError('Invalid email or password');
-    // }
+    console.log(values);
   };
 
   if (!mongoUser) {
@@ -72,40 +59,61 @@ const EditProfileForm: React.FC = () => {
       validationSchema={editProfileValidation}
       onSubmit={handleEditProfile}>
       <Form className='max-w-screen-sm mx-auto'>
-        <div className='grid grid-cols-1 sm:grid-cols-2 gap-x-2 sm:gap-x-5'>
-          <FormikTextInput field='firstName' label='First Name' />
-          <FormikTextInput field='lastName' label='Last Name' />
+        <div className='grid grid-cols-2 gap-x-2 gap-y-5 sm:gap-x-5'>
+          <div className='col-span-1'>
+            <FormikTextInput field='firstName' label='First Name' />
+          </div>
+          <div className='col-span-1'>
+            <FormikTextInput field='lastName' label='Last Name' />
+          </div>
+          <div className='col-span-2'>
+            <FormikTextInput
+              field='email'
+              label='Email'
+              Icon={MdEmail}
+              disabled
+            />
+          </div>
+          <div className='col-span-2'>
+            <FormikTextInput
+              field='phoneNumber'
+              label='Phone Number'
+              placeholder='(555) 555-1234'
+              Icon={FaPhoneSquare}
+            />
+          </div>
+          <div className='col-span-2'>
+            <FormikTextInput
+              field='linkedin'
+              label='Linkedin'
+              pretext='linkedin.com/in/'
+              pl={44}
+              Icon={AiFillLinkedin}
+            />
+          </div>
+          <div className='col-span-2'>
+            <FormikTextInput
+              field='instagram'
+              label='Instagram'
+              pretext='instagram.com/'
+              pl={43}
+              Icon={AiFillInstagram}
+            />
+          </div>
+          <div className='col-span-2'>
+            <FormikTextInput
+              field='facebook'
+              label='Facebook'
+              pretext='facebook.com/'
+              pl={42}
+              Icon={FaFacebookSquare}
+            />
+          </div>
         </div>
-        <FormikTextInput field='email' label='Email' Icon={MdEmail} disabled />
-        <FormikTextInput
-          field='phoneNumber'
-          label='Phone Number'
-          placeholder='(555) 555-1234'
-          Icon={FaPhoneSquare}
-        />
-        <FormikTextInput
-          field='linkedin'
-          label='Linkedin'
-          pretext='linkedin.com/in/'
-          pl={44}
-          Icon={AiFillLinkedin}
-        />
-        <FormikTextInput
-          field='instagram'
-          label='Instagram'
-          pretext='instagram.com/'
-          pl={43}
-          Icon={AiFillInstagram}
-        />
-        <FormikTextInput
-          field='facebook'
-          label='Facebook'
-          pretext='facebook.com/'
-          pl={42}
-          Icon={FaFacebookSquare}
-        />
-        {error ? <p className='text-red-500 pl-1 text-sm'>{error}</p> : null}
-        <div className='flex justify-center'>
+        {error ? (
+          <p className='text-red-500 pl-1 text-sm mt-2'>{error}</p>
+        ) : null}
+        <div className='flex justify-center mt-6'>
           <button
             className='btn w-full my-2 font-bold text-white bg-blue-700 rounded-full hover:bg-blue-800 disabled:bg-blue-700 max-w-sm'
             type='submit'

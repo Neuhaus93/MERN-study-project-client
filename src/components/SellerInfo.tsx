@@ -2,7 +2,6 @@ import React from 'react';
 import { ProductQuery } from '../graphql/__generated__';
 import { SocialsObjType } from '../util/socials';
 import { SocialBadges } from './SocialBadges';
-import { MyImage } from '../components/MyImage';
 import { UserImage } from './UserImage';
 
 interface SellerInfoProps {

@@ -9,12 +9,13 @@ import {
   ROUTE_PROFILE,
   ROUTE_REGISTER,
   ROUTE_SEARCH,
+  ROUTE_CREATE_AD,
 } from '../util/routes';
 import { UserImage } from './UserImage';
 
 interface HeaderProps {}
 
-const NAV_PAGES = [{ title: 'Post an Ad', url: '/#' }];
+const NAV_PAGES = [{ title: 'Post an Ad', url: ROUTE_CREATE_AD }];
 const selectedStyle =
   'bg-gray-900 hover:text-blue-100 text-white px-3 py-2 rounded-md text-sm font-medium hover:opacity-90';
 const notSelectedStyle =
@@ -55,16 +56,16 @@ export const Header: React.FC<HeaderProps> = () => {
               <div className='ml-10 flex items-baseline space-x-4'>
                 {NAV_PAGES.map((page, index) => {
                   return (
-                    <a
+                    <Link
                       key={index}
-                      href={page.url}
+                      to={page.url}
                       className={
                         page.title === currentPage
                           ? selectedStyle
                           : notSelectedStyle
                       }>
                       {page.title}
-                    </a>
+                    </Link>
                   );
                 })}
               </div>
@@ -130,16 +131,16 @@ export const Header: React.FC<HeaderProps> = () => {
             <div className='px-2 pt-2 pb-3 space-y-1 sm:px-3'>
               {NAV_PAGES.map((page, index) => {
                 return (
-                  <a
+                  <Link
                     key={index}
-                    href={page.url}
+                    to={page.url}
                     className={
                       page.title === currentPage
                         ? `${selectedStyle} block`
                         : `${notSelectedStyle} block`
                     }>
                     {page.title}
-                  </a>
+                  </Link>
                 );
               })}
             </div>

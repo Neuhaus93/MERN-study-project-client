@@ -55,3 +55,20 @@ export const editProfileValidation = Yup.object({
     .min(2, 'Must be 2 characters or more')
     .max(20, 'Must be 20 characters or less'),
 });
+
+export const createAdValidation = Yup.object({
+  title: Yup.string()
+    .required(requiredError)
+    .min(3, 'Must be 3 characters or more')
+    .max(80, 'Must be 80 characters or less'),
+  price: Yup.string()
+    .required(requiredError)
+    .min(1, 'Must be 2 characters or more')
+    .max(11, 'Way to expensive for us'),
+  location: Yup.string().required(requiredError),
+  category: Yup.string().required(requiredError),
+  description: Yup.string()
+    .required(requiredError)
+    .min(5, 'Must be 5 characters or more')
+    .max(3000, 'Must be 3000 characters or less'),
+});

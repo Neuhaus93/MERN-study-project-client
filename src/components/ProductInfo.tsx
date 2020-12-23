@@ -175,12 +175,3 @@ const StyledDropdown = styled.div`
     top: 48px;
   }
 `;
-
-// const fakeItemInfo = {
-//   title: 'New title for the ad',
-//   location: 'Alabama',
-//   price: '30',
-//   description:
-//     'Lorem ipsum dolor sit amet consectetur adipisicing elit. Deleniti dolore nulla vitae enim delectus sunt adipisci quia possimus alias ipsa libero veniam illo sit inventore perferendis ratione praesentium, officiis sed obcaecati eos exercitationem pariatur at aliquid accusantium. Quibusdam, odio nam?',
-//   date: new Date(),
-// };

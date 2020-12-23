@@ -15,3 +15,57 @@ body {
     @apply w-full flex flex-wrap box-border;
   }
 }
+
+@layer components {
+  .text-input {
+    @apply text-sm relative w-full border rounded shadow-sm placeholder-gray-400 py-2 px-4;
+    @apply sm:text-base focus:ring-2 focus:outline-none;
+    @apply hover:border-gray-300 disabled:text-gray-600;
+  }
+
+  .text-input-label {
+    @apply block text-sm mb-2 tracking-wide font-bold text-gray-700;
+  }
+
+  .text-input-error {
+    @apply text-xs font-semibold text-red-400 pt-1.5 pl-0.5;
+  }
+
+  .text-input-success {
+    @apply text-xs font-semibold text-indigo-400 pt-1.5 pl-0.5;
+  }
+}
+
+@layer components {
+  .products-table-paginate {
+    @apply flex flex-row;
+  }
+
+  .products-table-paginate > li {
+    @apply text-gray-800 font-bold bg-blue-50 border box-border;
+  }
+
+  .products-table-paginate > li > a {
+    @apply py-2 px-4 flex flex-1;
+  }
+
+  .products-table-paginate > .selected {
+    @apply bg-blue-500 text-white;
+  }
+
+  .products-table-paginate > .previous {
+    @apply mr-2 rounded;
+  }
+
+  .products-table-paginate > .next {
+    @apply ml-2 rounded;
+  }
+
+  .products-table-paginate > li:nth-child(2) {
+    @apply rounded-l;
+  }
+
+  .products-table-paginate > li:nth-last-child(2) {
+    @apply rounded-r;
+  }
+}

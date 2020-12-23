@@ -13,6 +13,7 @@ import { useAuth } from './hooks/useAuth';
 import { AdScreen } from './pages/AdScreen';
 import { AllPostsScreen } from './pages/AllPostsScreen';
 import { AllProductsScreen } from './pages/AllProductsScreen';
+import { CreateAdScreen } from './pages/CreateAdScreen';
 import { FourOhFourScreen } from './pages/FourOhFour';
 import { HomeScreen } from './pages/HomeScreen';
 import { LoginScreen } from './pages/LoginScreen';
@@ -24,6 +25,7 @@ import {
   ROUTE_AD,
   ROUTE_ALL_POSTS,
   ROUTE_ALL_PRODUCTS,
+  ROUTE_CREATE_AD,
   ROUTE_LANDING,
   ROUTE_LOGIN,
   ROUTE_POST,
@@ -51,8 +53,8 @@ export const App: React.FC = () => {
           <Route component={AllProductsScreen} path={ROUTE_ALL_PRODUCTS} />
           <Route component={AllPostsScreen} path={ROUTE_ALL_POSTS} />
           <PrivateRoute component={ProfileScreen} path={ROUTE_PROFILE} />
+          <PrivateRoute component={CreateAdScreen} path={ROUTE_CREATE_AD} />
           <Route component={FourOhFourScreen} />
-          {/* <PrivateRoute component={CreateAdScreen} path={ROUTES.CREATE_AD} /> */}
         </Switch>
         <Footer />
       </BrowserRouter>

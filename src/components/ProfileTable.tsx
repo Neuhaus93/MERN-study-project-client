@@ -1,37 +1,113 @@
 import React, { useState } from 'react';
-import { UserProductsQuery } from '../graphql/__generated__';
+import Moment from 'react-moment';
 import Paginate from 'react-paginate';
+import tw, { styled } from 'twin.macro';
+import { UserProductsQuery } from '../graphql/__generated__';
 import '../styles/pagination.css';
+import { MyImage } from './MyImage';
 
 interface ProfileTableProps {
   data: UserProductsQuery['userProducts'];
 }
 
+interface TableProduct {
+  product: UserProductsQuery['userProducts'][number];
+}
+
 export const ProfileTable: React.FC<ProfileTableProps> = ({ data }) => {
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
 
   return (
     <div>
-      {data.map((p, idx) => {
-        return <p key={idx}>{p.title}</p>;
-      })}
-      <div className='paginate flex'>
-        <Paginate
-          forcePage={page}
-          pageCount={20}
-          marginPagesDisplayed={2}
-          pageRangeDisplayed={5}
-          onPageChange={(e) => {
-            console.log(e.selected);
-            setPage(e.selected);
-          }}
-          nextLabel='&rarr;'
-          previousLabel='&larr;'
-        />
+      <h2 className='text-center text-3xl font-bold my-4'>My Ads</h2>
+      <div className='shadow-md rounded-md overflow-hidden max-w-screen-lg mx-auto'>
+        <StyledHeader>
+          <p className='col-span-4 pl-4'>Items</p>
+          <p className='hidden sm:block text-center'>Post Date</p>
+          <p className='hidden sm:block text-center'>Category</p>
+        </StyledHeader>
+
+        <div className='bg-white'>
+          <div className='sm:hidden'>
+            {data.map((p) => (
+              <RowMobile key={p._id} product={p} />
+            ))}
+          </div>
+          <div className='hidden sm:block'>
+            {data.map((p) => (
+              <RowDefault key={p._id} product={p} />
+            ))}
+          </div>
+        </div>
+
+        <div className='flex justify-end py-2 px-4 bg-white'>
+          <Paginate
+            containerClassName='products-table-paginate'
+            forcePage={page}
+            pageCount={3}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={1}
+            onPageChange={(e) => {
+              setPage(e.selected);
+            }}
+            nextLabel='>'
+            previousLabel='<'
+          />
+        </div>
       </div>
     </div>
   );
 };
 
-// const prevIcon: React.FC = () => <div className='border p-2'>{'<'}</div>;
-// const nextIcon: React.FC = () => <div className='border p-2'>{'>'}</div>;
+const RowMobile: React.FC<TableProduct> = (props) => {
+  const {
+    product: { title, images, category, createdAt },
+  } = props;
+
+  return (
+    <div className='border-gray-300 border-b'>
+      <h6 className='m-2'>{title}</h6>
+      <div className='grid grid-cols-5'>
+        <div className='h-36 rounded-tr-md overflow-hidden col-span-3'>
+          <MyImage alt='product' cover srcList={images[0]} />
+        </div>
+        <div className='flex flex-col justify-center pl-4 col-span-2'>
+          <p className='font-bold'>Post Date:</p>
+          <p className='ml-1 uppercase text-sm'>
+            <Moment date={new Date(createdAt)} format='ll' />
+          </p>
+          <p className='font-bold mt-2'>Category:</p>
+          <p className='ml-1 uppercase text-sm'>{category}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const RowDefault: React.FC<TableProduct> = (props) => {
+  const {
+    product: { title, images, category, createdAt },
+  } = props;
+
+  return (
+    <div className='grid grid-cols-6 border-gray-300 border-b'>
+      <div className='col-span-1 h-28 xl:h-32'>
+        <MyImage alt='product' cover srcList={images[0]} />
+      </div>
+      <div className='col-span-3 text-sm my-auto pl-3 pr-2'>
+        <p>{title}</p>
+      </div>
+      <p className='col-span-1 text-sm text-center my-auto'>
+        <Moment date={new Date(createdAt)} format='ll' />
+      </p>
+      <p className='col-span-1 uppercase text-sm text-center my-auto'>
+        {category}
+      </p>
+    </div>
+  );
+};
+
+const StyledHeader = styled.div`
+  ${tw`grid grid-cols-6 text-sm py-3 bg-gray-200`}
+  ${tw`text-gray-900 font-bold items-center border-gray-300 border-b`}
+`;

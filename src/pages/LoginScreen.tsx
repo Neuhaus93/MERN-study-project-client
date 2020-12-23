@@ -1,7 +1,7 @@
 import { Form, Formik } from 'formik';
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { FormikTextInput, FormTextField } from '../components/FormFields';
+import { FormikTextInput } from '../components/FormFields';
 import { useAuth } from '../hooks/useAuth';
 import { DefaultWrapper } from '../styles/Wrapper';
 import { loginValidation } from '../util/forms-validation';
@@ -83,12 +83,14 @@ const LoginForm: React.FC<{ lastPath?: string }> = ({ lastPath }) => {
       onSubmit={handleLogin}>
       <Form>
         <FormikTextInput
+          className='mt-4'
           field='email'
           label='Email'
           placeholder='Enter Email...'
           type='email'
         />
         <FormikTextInput
+          className='mt-4 mb-6'
           field='password'
           label='Password'
           placeholder='************'
