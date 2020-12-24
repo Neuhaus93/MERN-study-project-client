@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { FaCamera } from 'react-icons/fa';
 import { useHistory } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
+import { IconX } from '../assets/Icons';
 import { useAddUserImageMutation } from '../graphql/__generated__';
 import { useAuth } from '../hooks/useAuth';
 import { useStorage } from '../hooks/useStorage';
@@ -22,11 +23,19 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({
   setIsOpen,
 }) => {
   const history = useHistory();
-  const { currentUser, mongoUser } = useAuth();
-  const { logout } = useAuth();
-  const [updatingImg, setUpdatingImg] = useState(false);
   const { uploadFile } = useStorage();
+  const { currentUser, mongoUser, logout } = useAuth();
   const [addUserImage, { loading }] = useAddUserImageMutation();
+  const [updatingImg, setUpdatingImg] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setTimeout(() => setTimeout(setIsHidden(true)), 500);
+    } else {
+      setIsHidden(false);
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     loading ? setUpdatingImg(true) : setUpdatingImg(false);
@@ -58,8 +67,9 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({
 
   return (
     <div
-      style={{ zIndex: isOpen ? 20 : -1 }}
-      className='fixed top-16 bottom-0 left-0 right-0 overflow-hidden'>
+      className={`${
+        isHidden ? 'hidden' : 'block'
+      } fixed inset-0 overflow-hidden z-50`}>
       <div className='absolute inset-0 overflow-hidden'>
         <Transition
           show={isOpen}
@@ -70,11 +80,11 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({
           leaveFrom='opacity-100'
           leaveTo='opacity-0'>
           <div
-            className='absolute inset-0 bg-gray-500 bg-opacity-75 transition-opacity'
+            className='absolute z-50 inset-0 bg-gray-500 bg-opacity-80 transition-opacity'
             aria-hidden='true'></div>
         </Transition>
         <section
-          className='absolute inset-y-0 right-0 pl-10 max-w-full flex'
+          className='absolute inset-y-0 right-0 pl-12 max-w-full flex'
           aria-labelledby='slide-over-heading'>
           <Transition
             show={isOpen}
@@ -85,26 +95,12 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({
             leaveFrom='translate-x-0"'
             leaveTo='translate-x-full'>
             <div className='z-50 relative w-screen max-w-md h-full pr-2'>
-              <div className='z-50 absolute top-0 left-0 -ml-8 pt-4 pr-2 flex sm:-ml-10 sm:pr-4'>
+              <div className='z-50 absolute top-0 left-0 -ml-10 pt-4 pr-2 flex sm:-ml-10 sm:pr-4'>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className='rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white'>
+                  className='rounded-md w-8 h-8 text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white'>
                   <span className='sr-only'>Close panel</span>
-                  {/* <!-- Heroicon name: x --> */}
-                  <svg
-                    className='h-6 w-6'
-                    xmlns='http://www.w3.org/2000/svg'
-                    fill='none'
-                    viewBox='0 0 24 24'
-                    stroke='currentColor'
-                    aria-hidden='true'>
-                    <path
-                      strokeLinecap='round'
-                      strokeLinejoin='round'
-                      strokeWidth='2'
-                      d='M6 18L18 6M6 6l12 12'
-                    />
-                  </svg>
+                  <IconX />
                 </button>
               </div>
               <div className='z-50 h-full flex flex-col py-6 bg-white shadow-xl overflow-y-scroll'>
