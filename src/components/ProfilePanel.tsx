@@ -1,9 +1,14 @@
 import { Transition } from '@headlessui/react';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { FaCamera } from 'react-icons/fa';
 import { useHistory } from 'react-router-dom';
+import tw, { styled } from 'twin.macro';
+import { useAddUserImageMutation } from '../graphql/__generated__';
 import { useAuth } from '../hooks/useAuth';
+import { useStorage } from '../hooks/useStorage';
 import { ROUTE_LANDING } from '../util/routes';
 import { SIDEBAR_BUTTONS } from '../util/sidebar-buttons';
+import { CircularProgress } from './CircularProgress';
 import { SidebarBtnMobile } from './SidebarButton';
 import { UserImage } from './UserImage';
 
@@ -17,8 +22,39 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({
   setIsOpen,
 }) => {
   const history = useHistory();
-  const { mongoUser } = useAuth();
+  const { currentUser, mongoUser } = useAuth();
   const { logout } = useAuth();
+  const [updatingImg, setUpdatingImg] = useState(false);
+  const { uploadFile } = useStorage();
+  const [addUserImage, { loading }] = useAddUserImageMutation();
+
+  useEffect(() => {
+    loading ? setUpdatingImg(true) : setUpdatingImg(false);
+  }, [loading]);
+
+  const handleUploadPhoto = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!currentUser) return;
+    if (!e.target.files || e.target.files.length === 0) return;
+
+    const images = e.target.files;
+    setUpdatingImg(true);
+
+    // Upload new image
+    uploadFile(`users/${currentUser.uid}`, images[0], true)
+      .then((snapshot) => {
+        snapshot.ref
+          .getDownloadURL()
+          .then((url) => {
+            addUserImage({
+              variables: { firebaseId: currentUser.uid, imageSrc: url },
+            });
+          })
+          .catch((err) => console.log('Error getting image url', err));
+      })
+      .catch((err) => {
+        console.log('Error uploading image', err);
+      });
+  };
 
   return (
     <div
@@ -73,7 +109,29 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({
               </div>
               <div className='z-50 h-full flex flex-col py-6 bg-white shadow-xl overflow-y-scroll'>
                 <div className='px-4 sm:px-6 mx-auto'>
-                  <UserImage size={20} isUser />
+                  <Avatar>
+                    {updatingImg ? (
+                      <div className='flex justify-center items-center bg-gray-100'>
+                        <CircularProgress />
+                      </div>
+                    ) : (
+                      <>
+                        <UserImage isUser />
+                        <label htmlFor='upload-photo'>
+                          <input
+                            className='hidden'
+                            id='upload-photo'
+                            name='upload-photo'
+                            type='file'
+                            accept='image/*'
+                            onChange={handleUploadPhoto}
+                          />
+                          <FaCamera />
+                        </label>
+                      </>
+                    )}
+                  </Avatar>
+
                   <h6 className='text-lg text-gray-900 text-center -ml-4 mt-2 -mb-1'>
                     {mongoUser?.fullName}
                   </h6>
@@ -110,3 +168,28 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({
     </div>
   );
 };
+
+const Avatar = styled.div`
+  ${tw`relative overflow-hidden h-16 w-16 rounded-full`};
+  & > div {
+    ${tw`w-full h-full`}
+  }
+
+  & label {
+    ${tw`absolute bottom-0 left-0 w-full h-full p-1 opacity-0 cursor-pointer`};
+    transition: all 0.25s;
+
+    & svg {
+      ${tw`w-full h-full transform scale-50 inline-flex text-white`}
+    }
+
+    &:hover {
+      ${tw`opacity-70`};
+      background: rgba(0, 0, 0, 0.92);
+    }
+  }
+
+  & input {
+    ${tw`hidden`}
+  }
+`;

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import Moment from 'react-moment';
 import Paginate from 'react-paginate';
+import { Link } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
 import { UserProductsQuery } from '../graphql/__generated__';
 import '../styles/pagination.css';
+import { ROUTE_AD } from '../util/routes';
 import { MyImage } from './MyImage';
 
 interface ProfileTableProps {
@@ -86,16 +88,22 @@ const RowMobile: React.FC<TableProduct> = (props) => {
 
 const RowDefault: React.FC<TableProduct> = (props) => {
   const {
-    product: { title, images, category, createdAt },
+    product: { _id, title, images, category, createdAt },
   } = props;
 
   return (
     <div className='grid grid-cols-6 border-gray-300 border-b'>
       <div className='col-span-1 h-28 xl:h-32'>
-        <MyImage alt='product' cover srcList={images[0]} />
+        <Link to={`${ROUTE_AD}/${_id}`}>
+          <MyImage alt='product' cover srcList={images[0]} />
+        </Link>
       </div>
       <div className='col-span-3 text-sm my-auto pl-3 pr-2'>
-        <p>{title}</p>
+        <Link
+          to={`${ROUTE_AD}/${_id}`}
+          className='inline-block hover:text-blue-500'>
+          <p>{title}</p>
+        </Link>
       </div>
       <p className='col-span-1 text-sm text-center my-auto'>
         <Moment date={new Date(createdAt)} format='ll' />

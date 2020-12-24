@@ -170,7 +170,7 @@ const CreateAdForm: React.FC = () => {
           ) : null}
           <div className='col-span-2'>
             <SubmitButton className='btn' type='submit' disabled={loading}>
-              POST
+              {loading ? 'POSTING...' : 'POST'}
             </SubmitButton>
           </div>
         </Form>

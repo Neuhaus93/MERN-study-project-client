@@ -26,7 +26,7 @@ export const SidebarBtnDefault: React.FC<SidebarButtonProps> = (props) => {
 
   return (
     <button
-      className='btn rounded-none w-ful pl-4 2xl:pl-8 flex items-center text-xl text-gray-800 hover:bg-gray-800 hover:text-white hover:cursor-pointer'
+      className='btn rounded-none w-full py-4 pl-4 2xl:pl-8 flex items-center text-xl text-gray-800 hover:bg-gray-800 hover:text-white hover:cursor-pointer'
       onClick={cb}>
       <InlineIcon Icon={Icon} />
       <p className='pl-4 text-base'>{text}</p>

@@ -31,5 +31,5 @@ const StyledAvatar = styled.div<UserImageProps>`
   height: ${({ size }) => (size ? size / 4 + 'rem' : '100%')};
   width: ${({ size }) => (size ? size / 4 + 'rem' : '100%')};
   ${({ square }) => (square ? tw`rounded` : tw`rounded-full`)}
-  ${tw`overflow-hidden bg-gray-200 flex justify-center items-center`}
+  ${tw`overflow-hidden bg-gray-100 flex justify-center items-center`}
 `;
