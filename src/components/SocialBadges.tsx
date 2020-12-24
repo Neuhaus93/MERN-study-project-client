@@ -86,13 +86,6 @@ const Badge: React.FC<BadgeProps> = (props) => {
             index={index}
           />
         )}
-        {/* <StyledSocialBadge color={color} size={size}>
-          <button
-            onClick={() => setOpen(!open)}
-            className='w-full h-full flex justify-center items-center outline-none'>
-            <Icon className='icon' />
-          </button>
-        </StyledSocialBadge> */}
       </div>
     </ClickAwayListener>
   );
@@ -109,6 +102,7 @@ interface DropdownProps {
 const BadgeDropdown: React.FC<DropdownProps> = (props) => {
   const { social, value, color, Icon: SocialIcon, index } = props;
   const { getShownValueAndUrl, getLinkIcon } = helperFunctions;
+  const [shownValue, url] = getShownValueAndUrl(social, value);
   const LinkIcon = getLinkIcon(social);
 
   return (
@@ -116,11 +110,11 @@ const BadgeDropdown: React.FC<DropdownProps> = (props) => {
       className='bg-gray-50 absolute flex items-center bottom-9 left-0 z-10 whitespace-nowrap p-2 shadow-md'
       style={{ left: -38 * index }}>
       <SocialIcon className='mr-2' style={{ color, fontSize: '1.1rem' }} />
-      <p className='text-sm text-gray-600'>
-        {getShownValueAndUrl(social, value)[0]}
-      </p>
+      <p className='text-sm text-gray-600'>{shownValue}</p>
       {LinkIcon && (
-        <LinkIcon className='cursor-pointer ml-3' style={{ color }} />
+        <button type='button' onClick={() => window.open(url)}>
+          <LinkIcon className='cursor-pointer ml-3' style={{ color }} />
+        </button>
       )}
     </div>
   );

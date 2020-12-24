@@ -47,8 +47,6 @@ const EditProfileForm: React.FC = () => {
   ] = useEditUserReducer();
   const [updateUser] = useUpdateUserMutation();
 
-  console.log({ error, success, isLoading });
-
   useEffect(() => {
     if (!mongoUser) return;
     dispatch({

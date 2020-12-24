@@ -10,8 +10,13 @@ type SocialsArrType = Array<{
 interface State {
   isCreator: boolean;
   isLiked: boolean;
-  modalIsOpen: boolean;
   socialsArr: SocialsArrType;
+  modalState: {
+    isOpen: boolean;
+    text: string;
+    actionText: string;
+    handleAction: () => void;
+  };
 }
 type Actions =
   | {
@@ -21,16 +26,23 @@ type Actions =
   | { type: 'toggleLike' }
   | { type: 'setLikeProduct'; payload: boolean }
   | { type: 'setIsModalOpen'; payload: boolean }
-  | { type: 'isCreator' };
+  | { type: 'isCreator' }
+  | { type: 'openNotLoggedInModal'; payload: () => void }
+  | { type: 'openDeleteProductModel'; payload: () => void };
 
 const initialValues: State = {
   isLiked: false,
-  modalIsOpen: false,
   socialsArr: [],
   isCreator: false,
+  modalState: {
+    isOpen: false,
+    text: '',
+    actionText: '',
+    handleAction: () => ({}),
+  },
 };
 
-const reducer = (state: State, action: Actions) => {
+const reducer = (state: State, action: Actions): State => {
   switch (action.type) {
     case 'setSocials':
       return {
@@ -62,8 +74,34 @@ const reducer = (state: State, action: Actions) => {
     case 'setLikeProduct':
       return { ...state, isLiked: action.payload };
 
+    case 'openNotLoggedInModal': {
+      return {
+        ...state,
+        modalState: {
+          isOpen: true,
+          text: 'You must be logged in to perform this action',
+          actionText: 'Log In',
+          handleAction: action.payload,
+        },
+      };
+    }
+
+    case 'openDeleteProductModel':
+      return {
+        ...state,
+        modalState: {
+          isOpen: true,
+          text: 'Are you sure you want to delete this ad?',
+          actionText: 'Delete',
+          handleAction: action.payload,
+        },
+      };
+
     case 'setIsModalOpen':
-      return { ...state, modalIsOpen: action.payload };
+      return {
+        ...state,
+        modalState: { ...state.modalState, isOpen: action.payload },
+      };
 
     case 'isCreator':
       return { ...state, isCreator: true };

@@ -131,9 +131,9 @@ const ForumPost: React.FC<ForumPostProps> = (props) => {
         <div className='user__image'>
           <UserImage square src={reply.user.photo} />
         </div>
-        <p className='user__name'>{reply.user.fullName}</p>
+        <p className='user__name flex-1'>{reply.user.fullName}</p>
         {isCreator && (
-          <div className='inline-flex justify-center items-center pt-2'>
+          <div className='inline-flex pr-3 items-center justify-center pt-2 sm:pr-0 sm:w-full'>
             <ButtonRedOutline
               className='opacity-70 mb-2'
               onClick={handleClick}
@@ -227,7 +227,7 @@ const StyledForumPost = styled.div`
       ${tw`sm:(h-20 w-20)`}
     }
     &__name {
-      ${tw`text-sm text-center text-blue-800 mt-1 ml-3`}
+      ${tw`text-sm text-left text-blue-800 mt-1 ml-3`}
       ${tw`sm:(ml-0)`}
     }
   }

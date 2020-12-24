@@ -1,16 +1,28 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ClickAwayListener from 'react-click-away-listener';
-import { FaHeart, FaShareAlt } from 'react-icons/fa';
+import { FaHeart, FaShareAlt, FaTrash } from 'react-icons/fa';
 import { IoLocationSharp } from 'react-icons/io5';
 import Moment from 'react-moment';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
-import { ProductQuery, useLikeProductMutation } from '../graphql/__generated__';
+import {
+  ProductQuery,
+  ProductsDocument,
+  useDeleteProductMutation,
+  useLikeProductMutation,
+  UserProductsDocument,
+  UserProductsQuery,
+} from '../graphql/__generated__';
 import { useAuth } from '../hooks/useAuth';
 import { useProductButtonsReducer } from '../reducers/product-buttons-reducer';
-import { ROUTE_EDIT_AD } from '../util/routes';
+import { ROUTE_EDIT_AD, ROUTE_LOGIN } from '../util/routes';
 import { AllSocials, helperFunctions, SOCIALS } from '../util/socials';
-import { NotLoggedInModal } from './Modal';
+import {
+  ButtonBlueFilled,
+  ButtonBlueOutline,
+  ButtonRedOutline,
+} from './Buttons';
+import { Modal } from './Modal';
 import { InlineIcon } from './MyIcon';
 
 interface ProductInfoProps {
@@ -67,9 +79,14 @@ interface ButtonsProps {
 const Buttons: React.FC<ButtonsProps> = (props) => {
   const { creator, productId } = props;
   const { mongoUser } = useAuth();
+  const history = useHistory();
+  const [
+    deleteProduct,
+    { loading: loadingDelete },
+  ] = useDeleteProductMutation();
   const [buttonState, dispatch] = useProductButtonsReducer();
-  const [likeProduct, { loading }] = useLikeProductMutation();
-  const { isLiked, modalIsOpen, socialsArr, isCreator } = buttonState;
+  const [likeProduct, { loading: loadingLike }] = useLikeProductMutation();
+  const { isLiked, socialsArr, isCreator, modalState } = buttonState;
 
   /**
    * Start socialsArray and isCreator
@@ -98,7 +115,10 @@ const Buttons: React.FC<ButtonsProps> = (props) => {
    */
   const handleLike = () => {
     if (!mongoUser) {
-      dispatch({ type: 'setIsModalOpen', payload: true });
+      dispatch({
+        type: 'openNotLoggedInModal',
+        payload: () => history.push(ROUTE_LOGIN),
+      });
       return;
     }
 
@@ -107,33 +127,84 @@ const Buttons: React.FC<ButtonsProps> = (props) => {
     });
   };
 
+  /** Handle product delete */
+  const handleDelete = useCallback(() => {
+    if (!mongoUser) return;
+    dispatch({
+      type: 'openDeleteProductModel',
+      payload: deleteTheProduct,
+    });
+
+    function deleteTheProduct() {
+      if (!mongoUser) return;
+
+      deleteProduct({
+        variables: { userId: mongoUser._id, productId },
+        refetchQueries: [
+          { query: ProductsDocument, variables: { category: '' } },
+        ],
+        update: (cache) => {
+          let userProducts = null;
+          try {
+            userProducts = cache.readQuery<UserProductsQuery | null>({
+              query: UserProductsDocument,
+              variables: { userId: mongoUser._id },
+            });
+          } catch {
+            return;
+          }
+
+          if (!userProducts) {
+            return;
+          }
+          cache.writeQuery<UserProductsQuery>({
+            query: UserProductsDocument,
+            variables: { userId: mongoUser._id },
+            data: {
+              userProducts: userProducts.userProducts.filter(
+                (product) => product._id !== productId
+              ),
+            },
+          });
+        },
+      }).then(() => history.push('/'));
+    }
+  }, [deleteProduct, dispatch, history, mongoUser, productId]);
+
   return (
     <div className='flex space-x-2 h-10 mt-5'>
-      <button
-        className={`transition-all px-5 border rounded-md disabled:opacity-60 ${
-          isLiked && ` bg-red-400`
-        }`}
+      <ButtonRedOutline
+        className={`px-5 ${isLiked && `bg-red-400 hover:bg-red-500`}`}
         onClick={handleLike}
-        disabled={loading}>
+        disabled={loadingLike}>
         <FaHeart className={isLiked ? 'opacity-40' : 'opacity-50'} />
-      </button>
-      <button className='px-5 border rounded-md'>
+      </ButtonRedOutline>
+      <ButtonBlueOutline className='px-5'>
         <FaShareAlt className='opacity-90 text-blue-700' />
-      </button>
+      </ButtonBlueOutline>
       {isCreator ? (
-        <Link to={`${ROUTE_EDIT_AD}/${productId}`} className='w-full h-full'>
-          <button className='btn text-blue-50 bg-blue-800 border border-blue-200 w-full h-full rounded-md font-bold hover:bg-blue-900'>
-            Edit
-          </button>
-        </Link>
+        <>
+          <ButtonBlueOutline className='px-5' onClick={handleDelete}>
+            <FaTrash className='opacity-90 text-blue-700' />
+          </ButtonBlueOutline>
+          <Link to={`${ROUTE_EDIT_AD}/${productId}`} className='w-full h-full'>
+            <ButtonBlueFilled className='w-full h-full font-bold'>
+              Edit
+            </ButtonBlueFilled>
+          </Link>
+        </>
       ) : (
         <ReplyButton socials={socialsArr} />
       )}
-      <NotLoggedInModal
-        isOpen={modalIsOpen}
+      <Modal
+        isOpen={modalState.isOpen}
         setIsOpen={(isOpen: boolean) =>
           dispatch({ type: 'setIsModalOpen', payload: isOpen })
         }
+        text={modalState.text}
+        actionText={modalState.actionText}
+        handleAction={modalState.handleAction}
+        loading={loadingDelete}
       />
     </div>
   );
@@ -177,11 +248,11 @@ const ReplyButton: React.FC<{ socials: SocialArrType }> = ({ socials }) => {
   return (
     <ClickAwayListener className='flex-1' onClickAway={handleClickAway}>
       <div className='relative h-full'>
-        <button
+        <ButtonBlueFilled
           onClick={() => setOpen(!open)}
-          className='btn text-blue-50 bg-blue-800 border border-blue-200 w-full h-full rounded-md font-bold hover:bg-blue-900'>
+          className='w-full h-full font-bold'>
           Reply
-        </button>
+        </ButtonBlueFilled>
         {open && (
           <StyledDropdown className='bg-blue-50 shadow-md rounded-md'>
             {socials.map((social, index) => {
@@ -202,13 +273,12 @@ const ReplyButton: React.FC<{ socials: SocialArrType }> = ({ socials }) => {
                   />
                   <p className='text-gray-900 text-sm'>{shownValue}</p>
                   {LinkIcon && (
-                    <div className='ml-4 flex-1'>
-                      <LinkIcon
-                        className='text-lg'
-                        style={getStyle(color)}
-                        onClick={() => window.open(url)}
-                      />
-                    </div>
+                    <button
+                      type='button'
+                      onClick={() => window.open(url)}
+                      className='ml-4 flex-1'>
+                      <LinkIcon className='text-lg' style={getStyle(color)} />
+                    </button>
                   )}
                 </div>
               );

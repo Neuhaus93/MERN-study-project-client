@@ -1,18 +1,22 @@
 import { Form, Formik } from 'formik';
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
+import { ButtonBlueFilled } from '../components/Buttons';
 import { FormikTextInput } from '../components/FormFields';
+import { useCreateUserMutation } from '../graphql/__generated__';
+import { useAuth } from '../hooks/useAuth';
+import { useRegisterReducer } from '../reducers/register-reducer';
 import { DefaultWrapper } from '../styles/Wrapper';
 import { registerValidation } from '../util/forms-validation';
 import { IMAGE_REGISTER } from '../util/images';
-import { ROUTE_LOGIN } from '../util/routes';
+import { ROUTE_LANDING, ROUTE_LOGIN } from '../util/routes';
 
 interface RegisterScreenProps {}
 
 export const RegisterScreen: React.FC<RegisterScreenProps> = () => {
   return (
-    <DefaultWrapper className='bg-blue-50 flex items-center justify-center'>
+    <DefaultWrapper className='relative bg-blue-50 flex items-center justify-center'>
       <StyledRegisterCard>
         <div className='w-full flex rounded-3xl overflow-hidden shadow-sm'>
           {/* Col */}
@@ -33,12 +37,13 @@ export const RegisterScreen: React.FC<RegisterScreenProps> = () => {
           </div>
         </div>
       </StyledRegisterCard>
+      <div className='absolute left-0 top-0 right-0 h-1/2 bg-blue-100 z-0' />
     </DefaultWrapper>
   );
 };
 
 const StyledRegisterCard = styled.div`
-  ${tw`w-full my-4 sm:max-w-screen-sm lg:max-w-screen-lg mx-4 sm:mx-auto`}
+  ${tw`w-full my-4 sm:max-w-screen-sm lg:max-w-screen-lg mx-4 sm:mx-auto z-10`}
 
   & .left-col {
     background-image: url(${IMAGE_REGISTER});
@@ -58,19 +63,37 @@ const StyledRegisterCard = styled.div`
 `;
 
 const RegisterForm: React.FC = () => {
-  const handleRegister = () => {
-    console.log('register submited');
+  const [screenState, dispatch] = useRegisterReducer();
+  const { initialValues, error, loading } = screenState;
+  const history = useHistory();
+  const { signup } = useAuth();
+  const [createUser] = useCreateUserMutation();
+
+  const handleRegister = async (values: typeof initialValues) => {
+    const { firstName, lastName, email, password } = values;
+    dispatch({ type: 'startRegister' });
+
+    try {
+      const newUser = await signup(email, password);
+      await createUser({
+        variables: {
+          createUserInput: {
+            firebaseId: newUser.user?.uid || '',
+            firstName,
+            lastName,
+            email,
+          },
+        },
+      });
+      history.push(ROUTE_LANDING);
+    } catch (err) {
+      dispatch({ type: 'errorOnRegister' });
+    }
   };
 
   return (
     <Formik
-      initialValues={{
-        firstName: '',
-        lastName: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-      }}
+      initialValues={initialValues}
       validationSchema={registerValidation}
       onSubmit={handleRegister}>
       {({ isSubmitting }) => (
@@ -103,18 +126,23 @@ const RegisterForm: React.FC = () => {
             type='password'
           />
           <FormikTextInput
-            className='mt-4 mb-6'
+            className='mt-4 mb-4'
             field='confirmPassword'
             label='Confirm Password'
             placeholder='************'
             type='password'
           />
-          <button
-            className='w-full my-2 py-3 font-bold text-white bg-blue-700 rounded-full hover:bg-blue-800 focus:outline-none focus:shadow-outline'
+          {error && (
+            <p className='text-sm font-bold text-red-400 pb-0.5 pl-1'>
+              {error}
+            </p>
+          )}
+          <ButtonBlueFilled
+            className='w-full my-2 py-3 font-bold rounded-full'
             type='submit'
-            disabled={isSubmitting}>
+            disabled={loading}>
             Register
-          </button>
+          </ButtonBlueFilled>
         </Form>
       )}
     </Formik>

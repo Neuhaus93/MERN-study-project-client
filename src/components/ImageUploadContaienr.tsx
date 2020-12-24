@@ -80,7 +80,9 @@ export const ImageUploadContaienr: React.FC<Props> = (props) => {
                 typeof image === 'string' ? image : URL.createObjectURL(image);
               return (
                 <StyImgContainer key={index}>
-                  <StyDeleteButton onClick={() => handleDelete(index)}>
+                  <StyDeleteButton
+                    type='button'
+                    onClick={() => handleDelete(index)}>
                     <BiTrash size={32} />
                   </StyDeleteButton>
                   <img

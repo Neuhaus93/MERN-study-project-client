@@ -72,3 +72,19 @@ export const createAdValidation = Yup.object({
     .min(5, 'Must be 5 characters or more')
     .max(3000, 'Must be 3000 characters or less'),
 });
+
+export const createPostValidation = Yup.object({
+  title: Yup.string()
+    .required(requiredError)
+    .min(3, 'Must be 3 characters or more')
+    .max(80, 'Must be 80 characters or less'),
+  body: Yup.string()
+    .required(requiredError)
+    .min(5, 'Must be 5 characters or more')
+    .max(3000, 'Must be 3000 characters or less'),
+  category: Yup.string().required(requiredError),
+});
+
+export const forgotPasswordValidation = Yup.object({
+  email: Yup.string().email('Invalid email address').required(requiredError),
+});

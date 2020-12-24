@@ -1,9 +1,12 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import LandingImg from '../assets/diamond-md.jpg';
+import { ButtonBlueLight } from '../components/Buttons';
 import { MyImage } from '../components/MyImage';
 import { PostsList } from '../components/PostsList';
 import { ProductsList } from '../components/ProductsList';
 import { DefaultWrapper } from '../styles/Wrapper';
+import { ROUTE_CREATE_POST } from '../util/routes';
 
 interface HomeScreenProps {}
 
@@ -26,6 +29,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = () => {
         <ProductsList />
         <div className='my-4'></div>
         <PostsList />
+        <div className='flex justify-end mt-1 mr-1'>
+          <Link to={ROUTE_CREATE_POST} className='h-full'>
+            <ButtonBlueLight>New Post</ButtonBlueLight>
+          </Link>
+        </div>
       </div>
     </DefaultWrapper>
   );

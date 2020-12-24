@@ -1,19 +1,20 @@
 import { Form, Formik } from 'formik';
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { ButtonBlueFilled } from '../components/Buttons';
 import { FormikTextInput } from '../components/FormFields';
 import { useAuth } from '../hooks/useAuth';
 import { DefaultWrapper } from '../styles/Wrapper';
 import { loginValidation } from '../util/forms-validation';
 import { IMAGE_LOGIN } from '../util/images';
-import { ROUTE_REGISTER } from '../util/routes';
+import { ROUTE_FORGOT_PASSWORD, ROUTE_REGISTER } from '../util/routes';
 
 interface LoginScreenProps {}
 
 export const LoginScreen: React.FC<LoginScreenProps> = () => {
   return (
-    <DefaultWrapper className='bg-blue-50 flex items-center justify-center'>
-      <div className='w-full sm:max-w-screen-sm lg:max-w-screen-lg mx-4 sm:mx-auto'>
+    <DefaultWrapper className='relative bg-blue-50 flex items-center justify-center'>
+      <div className='w-full sm:max-w-screen-sm lg:max-w-screen-lg mx-4 sm:mx-auto z-10'>
         <div className='w-full flex rounded-3xl overflow-hidden shadow-sm'>
           {/* Col */}
           <div
@@ -36,7 +37,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
             </div>
             <div className='text-center'>
               <Link
-                to={'/#'}
+                to={ROUTE_FORGOT_PASSWORD}
                 className='inline-block text-sm text-blue-500 align-baseline hover:text-blue-800'>
                 Forgot Password?
               </Link>
@@ -44,6 +45,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = () => {
           </div>
         </div>
       </div>
+      <div className='absolute left-0 top-0 right-0 h-1/2 bg-blue-100 z-0' />
     </DefaultWrapper>
   );
 };
@@ -55,7 +57,6 @@ const LoginForm: React.FC<{ lastPath?: string }> = ({ lastPath }) => {
   const [error, setError] = useState('');
 
   const handleLogin = async (values: { email: string; password: string }) => {
-    console.log('running');
     setError('');
     setLoading(true);
 
@@ -97,12 +98,12 @@ const LoginForm: React.FC<{ lastPath?: string }> = ({ lastPath }) => {
           type='password'
         />
         {error ? <p className='text-red-500 pl-1 text-sm'>{error}</p> : null}
-        <button
-          className='btn w-full my-2 font-bold text-white bg-blue-700 rounded-full hover:bg-blue-800 disabled:bg-blue-700'
+        <ButtonBlueFilled
+          className='w-full my-2 py-3 font-bold rounded-full'
           type='submit'
           disabled={loading}>
           Log in
-        </button>
+        </ButtonBlueFilled>
       </Form>
     </Formik>
   );

@@ -2,6 +2,7 @@ export const ROUTE_LANDING = '/';
 export const ROUTE_FORGOT_PASSWORD = '/forgot-password';
 export const ROUTE_REGISTER = '/register';
 export const ROUTE_LOGIN = '/login';
+export const ROUTE_CREATE_POST = '/create-post';
 export const ROUTE_CREATE_AD = '/create-ad';
 export const ROUTE_AD = '/ad';
 export const ROUTE_PROFILE = '/profile';

@@ -14,20 +14,24 @@ import { AdScreen } from './pages/AdScreen';
 import { AllPostsScreen } from './pages/AllPostsScreen';
 import { AllProductsScreen } from './pages/AllProductsScreen';
 import { CreateAdScreen } from './pages/CreateAdScreen';
+import { CreatePostScreen } from './pages/CreatePostScreen';
+import { EditAdScreen } from './pages/EditAdScreen';
+import { ForgotPasswordScreen } from './pages/ForgotPasswordScreen';
 import { FourOhFourScreen } from './pages/FourOhFour';
 import { HomeScreen } from './pages/HomeScreen';
 import { LoginScreen } from './pages/LoginScreen';
 import { PostScreen } from './pages/PostScreen';
 import { ProfileScreen } from './pages/ProfileScreen';
 import { RegisterScreen } from './pages/RegisterScreen';
-import { EditAdScreen } from './pages/EditAdScreen';
 import { SearchScreen } from './pages/SearchScreen';
 import {
   ROUTE_AD,
   ROUTE_ALL_POSTS,
   ROUTE_ALL_PRODUCTS,
   ROUTE_CREATE_AD,
+  ROUTE_CREATE_POST,
   ROUTE_EDIT_AD,
+  ROUTE_FORGOT_PASSWORD,
   ROUTE_LANDING,
   ROUTE_LOGIN,
   ROUTE_POST,
@@ -49,6 +53,10 @@ export const App: React.FC = () => {
             path={`${ROUTE_LOGIN}/:lastPath?`}
           />
           <AuthRoute component={RegisterScreen} path={ROUTE_REGISTER} />
+          <AuthRoute
+            component={ForgotPasswordScreen}
+            path={ROUTE_FORGOT_PASSWORD}
+          />
           <Route component={AdScreen} path={`${ROUTE_AD}/:id`} />
           <Route component={PostScreen} path={`${ROUTE_POST}/:postId`} />
           <Route component={SearchScreen} path={ROUTE_SEARCH} />
@@ -56,6 +64,7 @@ export const App: React.FC = () => {
           <Route component={AllPostsScreen} path={ROUTE_ALL_POSTS} />
           <PrivateRoute component={ProfileScreen} path={ROUTE_PROFILE} />
           <PrivateRoute component={CreateAdScreen} path={ROUTE_CREATE_AD} />
+          <PrivateRoute component={CreatePostScreen} path={ROUTE_CREATE_POST} />
           <PrivateRoute
             component={EditAdScreen}
             path={`${ROUTE_EDIT_AD}/:productId`}

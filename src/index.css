@@ -28,7 +28,7 @@ body {
   }
 
   .text-input-error {
-    @apply text-xs font-semibold text-red-400 pt-1.5 pl-0.5;
+    @apply text-xs font-semibold text-red-400 pt-1.5 pl-0.5 -mb-1.5;
   }
 
   .text-input-success {

@@ -134,6 +134,7 @@ export const Header: React.FC<HeaderProps> = () => {
                   <Link
                     key={index}
                     to={page.url}
+                    onClick={() => setIsOpen(false)}
                     className={
                       page.title === currentPage
                         ? `${selectedStyle} block`

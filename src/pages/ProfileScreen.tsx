@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { FaCamera } from 'react-icons/fa';
 import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';
+import { ButtonMobileOpen } from '../components/Buttons';
 import { CircularProgress } from '../components/CircularProgress';
 import { Divider } from '../components/Divider';
+import { NoAds, NoFavorites } from '../components/NoAdsComponent';
 import { ProfileEdit } from '../components/ProfileEdit';
 import { ProfilePanel } from '../components/ProfilePanel';
 import { ProfileTable } from '../components/ProfileTable';
@@ -36,21 +38,15 @@ export const ProfileScreen: React.FC = () => {
           <ProfilePanel isOpen={menuIsOpen} setIsOpen={setMenuIsOpen} />
         </div>
         {!menuIsOpen && (
-          <button
-            className='btn open-button sm:hidden'
-            onClick={() => {
-              setMenuIsOpen((prev) => !prev);
-            }}>
-            Open Menu
-          </button>
+          <ButtonMobileOpen onClick={() => setMenuIsOpen((prev) => !prev)} />
         )}
         <Sidebar />
         <div className='content'>
           <Switch>
-            <Route component={MyFavorites} path={ROUTE_FAVORITES} />
             <Route component={MyAds} path={ROUTE_MY_ADS} />
+            <Route component={MyFavorites} path={ROUTE_FAVORITES} />
             <Route component={ProfileEdit} path={ROUTE_EDIT_PROFILE} />
-            <Redirect to={ROUTE_FAVORITES} />
+            <Redirect to={ROUTE_MY_ADS} />
           </Switch>
         </div>
       </StledProfileContainer>
@@ -72,13 +68,13 @@ const MyFavorites: React.FC = () => {
     }
   }, [mongoUser, getUserFavorites]);
 
-  if (!data) {
-    return null;
-  }
-
   return (
-    <div>
-      <ProfileTable title='My Favorites' data={data.userFavorites} />
+    <div className='w-full h-full flex justify-center items-center'>
+      {data && data.userFavorites.length > 0 ? (
+        <ProfileTable title='My Favorites' data={data.userFavorites} />
+      ) : (
+        <NoFavorites />
+      )}
     </div>
   );
 };
@@ -97,13 +93,13 @@ const MyAds: React.FC = () => {
     }
   }, [mongoUser, getUserProducts]);
 
-  if (!data) {
-    return null;
-  }
-
   return (
-    <div>
-      <ProfileTable title='My Ads' data={data.userProducts} />
+    <div className='w-full h-full flex justify-center items-center'>
+      {data && data.userProducts.length > 0 ? (
+        <ProfileTable title='My Ads' data={data.userProducts} />
+      ) : (
+        <NoAds />
+      )}
     </div>
   );
 };
