@@ -10,18 +10,21 @@ import { MyImage } from './MyImage';
 
 interface ProfileTableProps {
   data: UserProductsQuery['userProducts'];
+  title: string;
 }
 
 interface TableProduct {
   product: UserProductsQuery['userProducts'][number];
 }
 
-export const ProfileTable: React.FC<ProfileTableProps> = ({ data }) => {
-  const [page, setPage] = useState(0);
+const ITEMS_PER_PAGE = 12;
+
+export const ProfileTable: React.FC<ProfileTableProps> = ({ data, title }) => {
+  const [currentPage, setCurrentPage] = useState(0);
 
   return (
     <div>
-      <h2 className='text-center text-3xl font-bold my-4'>My Ads</h2>
+      <h2 className='text-center text-3xl font-bold my-4'>{title}</h2>
       <div className='shadow-md rounded-md overflow-hidden max-w-screen-lg mx-auto'>
         <StyledHeader>
           <p className='col-span-4 pl-4'>Items</p>
@@ -31,26 +34,35 @@ export const ProfileTable: React.FC<ProfileTableProps> = ({ data }) => {
 
         <div className='bg-white'>
           <div className='sm:hidden'>
-            {data.map((p) => (
-              <RowMobile key={p._id} product={p} />
-            ))}
+            {data
+              .slice(
+                currentPage * ITEMS_PER_PAGE,
+                (currentPage + 1) * ITEMS_PER_PAGE
+              )
+              .map((p) => (
+                <RowMobile key={p._id} product={p} />
+              ))}
           </div>
           <div className='hidden sm:block'>
-            {data.map((p) => (
-              <RowDefault key={p._id} product={p} />
-            ))}
+            {data
+              .slice(
+                currentPage * ITEMS_PER_PAGE,
+                (currentPage + 1) * ITEMS_PER_PAGE
+              )
+              .map((p) => (
+                <RowDefault key={p._id} product={p} />
+              ))}
           </div>
         </div>
 
         <div className='flex justify-end py-2 px-4 bg-white'>
           <Paginate
             containerClassName='products-table-paginate'
-            forcePage={page}
-            pageCount={3}
+            pageCount={Math.ceil(data.length / ITEMS_PER_PAGE)}
             marginPagesDisplayed={2}
             pageRangeDisplayed={1}
             onPageChange={(e) => {
-              setPage(e.selected);
+              setCurrentPage(e.selected);
             }}
             nextLabel='>'
             previousLabel='<'

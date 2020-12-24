@@ -78,7 +78,7 @@ const MyFavorites: React.FC = () => {
 
   return (
     <div>
-      <ProfileTable data={data.userFavorites} />
+      <ProfileTable title='My Favorites' data={data.userFavorites} />
     </div>
   );
 };
@@ -103,7 +103,7 @@ const MyAds: React.FC = () => {
 
   return (
     <div>
-      <ProfileTable data={data.userProducts} />
+      <ProfileTable title='My Ads' data={data.userProducts} />
     </div>
   );
 };
