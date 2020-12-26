@@ -1,10 +1,10 @@
-mutation ReplyPost($postId: String!, $userId: String!, $body: String!) {
-  replyPost(postId: $postId, userId: $userId, body: $body) {
+mutation ReplyPost($postId: String!, $body: String!) {
+  replyPost(postId: $postId, body: $body) {
     _id
     replies {
       _id
       body
-      user {
+      creator {
         _id
       }
       createdAt

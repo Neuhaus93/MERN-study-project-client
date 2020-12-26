@@ -11,7 +11,6 @@ import {
 } from '../components/FormFields';
 import { ImageUploadContaienr } from '../components/ImageUploadContaienr';
 import {
-  CreateProductInput,
   ProductsDocument,
   useAddProductImageMutation,
   useCreateProductMutation,
@@ -49,13 +48,9 @@ const CreateAdForm: React.FC = () => {
     if (!mongoUser) return;
 
     dispatch({ type: 'startLoading' });
-    const createProductInput: CreateProductInput = {
-      ...values,
-      userId: mongoUser._id,
-    };
 
     const { data, errors: creatingError } = await createProduct({
-      variables: { createProductInput },
+      variables: { createProductInput: values },
       refetchQueries: [
         { query: ProductsDocument, variables: { category: '' } },
       ],

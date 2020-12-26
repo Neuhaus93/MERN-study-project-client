@@ -86,7 +86,7 @@ export type Post = {
 export type Reply = {
   __typename?: 'Reply';
   _id: Scalars['ID'];
-  user: User;
+  creator: User;
   body: Scalars['String'];
   createdAt: Scalars['DateTime'];
 };
@@ -147,19 +147,16 @@ export type Mutation = {
 
 export type MutationCreatePostArgs = {
   postInput: PostInput;
-  userid: Scalars['String'];
 };
 
 
 export type MutationDeletePostArgs = {
   postId: Scalars['String'];
-  userId: Scalars['String'];
 };
 
 
 export type MutationReplyPostArgs = {
   body: Scalars['String'];
-  userId: Scalars['String'];
   postId: Scalars['String'];
 };
 
@@ -188,7 +185,6 @@ export type MutationUdpateProductArgs = {
 
 export type MutationDeleteProductArgs = {
   productId: Scalars['String'];
-  userId: Scalars['String'];
 };
 
 
@@ -199,19 +195,16 @@ export type MutationCreateUserArgs = {
 
 export type MutationUpdateUserArgs = {
   updateUserInput: UpdateUserInput;
-  userId: Scalars['String'];
 };
 
 
 export type MutationLikeProductArgs = {
   productId: Scalars['String'];
-  userId: Scalars['String'];
 };
 
 
 export type MutationAddUserImageArgs = {
   imageSrc: Scalars['String'];
-  firebaseId: Scalars['String'];
 };
 
 export type PostInput = {
@@ -221,7 +214,6 @@ export type PostInput = {
 };
 
 export type CreateProductInput = {
-  userId: Scalars['String'];
   title: Scalars['String'];
   description: Scalars['String'];
   location: Scalars['String'];
@@ -230,7 +222,6 @@ export type CreateProductInput = {
 };
 
 export type UpdateProductInput = {
-  userId: Scalars['String'];
   title: Scalars['String'];
   description: Scalars['String'];
   location: Scalars['String'];
@@ -287,7 +278,6 @@ export type AddProductImageMutation = (
 
 export type AddUserImageMutationVariables = Exact<{
   imageSrc: Scalars['String'];
-  firebaseId: Scalars['String'];
 }>;
 
 
@@ -300,7 +290,6 @@ export type AddUserImageMutation = (
 );
 
 export type CreatePostMutationVariables = Exact<{
-  userId: Scalars['String'];
   postInput: PostInput;
 }>;
 
@@ -347,7 +336,6 @@ export type CreateUserMutation = (
 
 export type DeletePostMutationVariables = Exact<{
   postId: Scalars['String'];
-  userId: Scalars['String'];
 }>;
 
 
@@ -360,7 +348,6 @@ export type DeletePostMutation = (
 );
 
 export type DeleteProductMutationVariables = Exact<{
-  userId: Scalars['String'];
   productId: Scalars['String'];
 }>;
 
@@ -390,7 +377,6 @@ export type DeleteReplyMutation = (
 
 export type LikeProductMutationVariables = Exact<{
   productId: Scalars['String'];
-  userId: Scalars['String'];
 }>;
 
 
@@ -404,7 +390,6 @@ export type LikeProductMutation = (
 
 export type ReplyPostMutationVariables = Exact<{
   postId: Scalars['String'];
-  userId: Scalars['String'];
   body: Scalars['String'];
 }>;
 
@@ -417,7 +402,7 @@ export type ReplyPostMutation = (
     & { replies: Array<(
       { __typename?: 'Reply' }
       & Pick<Reply, '_id' | 'body' | 'createdAt'>
-      & { user: (
+      & { creator: (
         { __typename?: 'User' }
         & Pick<User, '_id'>
       ) }
@@ -441,7 +426,6 @@ export type UpdateProductMutation = (
 
 export type UpdateUserMutationVariables = Exact<{
   updateUserInput: UpdateUserInput;
-  userId: Scalars['String'];
 }>;
 
 
@@ -473,7 +457,7 @@ export type PostQuery = (
     ), replies: Array<(
       { __typename?: 'Reply' }
       & Pick<Reply, '_id' | 'body' | 'createdAt'>
-      & { user: (
+      & { creator: (
         { __typename?: 'User' }
         & Pick<User, '_id' | 'fullName' | 'photo'>
       ) }
@@ -590,7 +574,7 @@ export type UserFavoritesQuery = (
   { __typename?: 'Query' }
   & { userFavorites: Array<(
     { __typename?: 'Product' }
-    & Pick<Product, '_id' | 'title' | 'description' | 'category' | 'createdAt' | 'images'>
+    & Pick<Product, '_id' | 'title' | 'description' | 'category' | 'images' | 'createdAt'>
   )> }
 );
 
@@ -603,7 +587,7 @@ export type UserProductsQuery = (
   { __typename?: 'Query' }
   & { userProducts: Array<(
     { __typename?: 'Product' }
-    & Pick<Product, '_id' | 'title' | 'category' | 'description' | 'images' | 'createdAt'>
+    & Pick<Product, '_id' | 'title' | 'description' | 'category' | 'images' | 'createdAt'>
   )> }
 );
 
@@ -667,8 +651,8 @@ export type AddProductImageMutationHookResult = ReturnType<typeof useAddProductI
 export type AddProductImageMutationResult = Apollo.MutationResult<AddProductImageMutation>;
 export type AddProductImageMutationOptions = Apollo.BaseMutationOptions<AddProductImageMutation, AddProductImageMutationVariables>;
 export const AddUserImageDocument = gql`
-    mutation addUserImage($imageSrc: String!, $firebaseId: String!) {
-  addUserImage(imageSrc: $imageSrc, firebaseId: $firebaseId) {
+    mutation addUserImage($imageSrc: String!) {
+  addUserImage(imageSrc: $imageSrc) {
     _id
     photo
   }
@@ -690,7 +674,6 @@ export type AddUserImageMutationFn = Apollo.MutationFunction<AddUserImageMutatio
  * const [addUserImageMutation, { data, loading, error }] = useAddUserImageMutation({
  *   variables: {
  *      imageSrc: // value for 'imageSrc'
- *      firebaseId: // value for 'firebaseId'
  *   },
  * });
  */
@@ -701,8 +684,8 @@ export type AddUserImageMutationHookResult = ReturnType<typeof useAddUserImageMu
 export type AddUserImageMutationResult = Apollo.MutationResult<AddUserImageMutation>;
 export type AddUserImageMutationOptions = Apollo.BaseMutationOptions<AddUserImageMutation, AddUserImageMutationVariables>;
 export const CreatePostDocument = gql`
-    mutation CreatePost($userId: String!, $postInput: PostInput!) {
-  createPost(userid: $userId, postInput: $postInput) {
+    mutation CreatePost($postInput: PostInput!) {
+  createPost(postInput: $postInput) {
     ...RegularPost
     repliesCount
     createdAt
@@ -724,7 +707,6 @@ export type CreatePostMutationFn = Apollo.MutationFunction<CreatePostMutation, C
  * @example
  * const [createPostMutation, { data, loading, error }] = useCreatePostMutation({
  *   variables: {
- *      userId: // value for 'userId'
  *      postInput: // value for 'postInput'
  *   },
  * });
@@ -808,8 +790,8 @@ export type CreateUserMutationHookResult = ReturnType<typeof useCreateUserMutati
 export type CreateUserMutationResult = Apollo.MutationResult<CreateUserMutation>;
 export type CreateUserMutationOptions = Apollo.BaseMutationOptions<CreateUserMutation, CreateUserMutationVariables>;
 export const DeletePostDocument = gql`
-    mutation DeletePost($postId: String!, $userId: String!) {
-  deletePost(postId: $postId, userId: $userId) {
+    mutation DeletePost($postId: String!) {
+  deletePost(postId: $postId) {
     _id
   }
 }
@@ -830,7 +812,6 @@ export type DeletePostMutationFn = Apollo.MutationFunction<DeletePostMutation, D
  * const [deletePostMutation, { data, loading, error }] = useDeletePostMutation({
  *   variables: {
  *      postId: // value for 'postId'
- *      userId: // value for 'userId'
  *   },
  * });
  */
@@ -841,8 +822,8 @@ export type DeletePostMutationHookResult = ReturnType<typeof useDeletePostMutati
 export type DeletePostMutationResult = Apollo.MutationResult<DeletePostMutation>;
 export type DeletePostMutationOptions = Apollo.BaseMutationOptions<DeletePostMutation, DeletePostMutationVariables>;
 export const DeleteProductDocument = gql`
-    mutation DeleteProduct($userId: String!, $productId: String!) {
-  deleteProduct(userId: $userId, productId: $productId)
+    mutation DeleteProduct($productId: String!) {
+  deleteProduct(productId: $productId)
 }
     `;
 export type DeleteProductMutationFn = Apollo.MutationFunction<DeleteProductMutation, DeleteProductMutationVariables>;
@@ -860,7 +841,6 @@ export type DeleteProductMutationFn = Apollo.MutationFunction<DeleteProductMutat
  * @example
  * const [deleteProductMutation, { data, loading, error }] = useDeleteProductMutation({
  *   variables: {
- *      userId: // value for 'userId'
  *      productId: // value for 'productId'
  *   },
  * });
@@ -909,8 +889,8 @@ export type DeleteReplyMutationHookResult = ReturnType<typeof useDeleteReplyMuta
 export type DeleteReplyMutationResult = Apollo.MutationResult<DeleteReplyMutation>;
 export type DeleteReplyMutationOptions = Apollo.BaseMutationOptions<DeleteReplyMutation, DeleteReplyMutationVariables>;
 export const LikeProductDocument = gql`
-    mutation LikeProduct($productId: String!, $userId: String!) {
-  likeProduct(productId: $productId, userId: $userId) {
+    mutation LikeProduct($productId: String!) {
+  likeProduct(productId: $productId) {
     _id
     likes
   }
@@ -932,7 +912,6 @@ export type LikeProductMutationFn = Apollo.MutationFunction<LikeProductMutation,
  * const [likeProductMutation, { data, loading, error }] = useLikeProductMutation({
  *   variables: {
  *      productId: // value for 'productId'
- *      userId: // value for 'userId'
  *   },
  * });
  */
@@ -943,13 +922,13 @@ export type LikeProductMutationHookResult = ReturnType<typeof useLikeProductMuta
 export type LikeProductMutationResult = Apollo.MutationResult<LikeProductMutation>;
 export type LikeProductMutationOptions = Apollo.BaseMutationOptions<LikeProductMutation, LikeProductMutationVariables>;
 export const ReplyPostDocument = gql`
-    mutation ReplyPost($postId: String!, $userId: String!, $body: String!) {
-  replyPost(postId: $postId, userId: $userId, body: $body) {
+    mutation ReplyPost($postId: String!, $body: String!) {
+  replyPost(postId: $postId, body: $body) {
     _id
     replies {
       _id
       body
-      user {
+      creator {
         _id
       }
       createdAt
@@ -973,7 +952,6 @@ export type ReplyPostMutationFn = Apollo.MutationFunction<ReplyPostMutation, Rep
  * const [replyPostMutation, { data, loading, error }] = useReplyPostMutation({
  *   variables: {
  *      postId: // value for 'postId'
- *      userId: // value for 'userId'
  *      body: // value for 'body'
  *   },
  * });
@@ -1019,8 +997,8 @@ export type UpdateProductMutationHookResult = ReturnType<typeof useUpdateProduct
 export type UpdateProductMutationResult = Apollo.MutationResult<UpdateProductMutation>;
 export type UpdateProductMutationOptions = Apollo.BaseMutationOptions<UpdateProductMutation, UpdateProductMutationVariables>;
 export const UpdateUserDocument = gql`
-    mutation UpdateUser($updateUserInput: UpdateUserInput!, $userId: String!) {
-  updateUser(updateUserInput: $updateUserInput, userId: $userId) {
+    mutation UpdateUser($updateUserInput: UpdateUserInput!) {
+  updateUser(updateUserInput: $updateUserInput) {
     _id
     firstName
     lastName
@@ -1050,7 +1028,6 @@ export type UpdateUserMutationFn = Apollo.MutationFunction<UpdateUserMutation, U
  * const [updateUserMutation, { data, loading, error }] = useUpdateUserMutation({
  *   variables: {
  *      updateUserInput: // value for 'updateUserInput'
- *      userId: // value for 'userId'
  *   },
  * });
  */
@@ -1073,7 +1050,7 @@ export const PostDocument = gql`
     }
     replies {
       _id
-      user {
+      creator {
         _id
         fullName
         photo
@@ -1362,8 +1339,8 @@ export const UserFavoritesDocument = gql`
     title
     description
     category
-    createdAt
     images
+    createdAt
   }
 }
     `;
@@ -1398,8 +1375,8 @@ export const UserProductsDocument = gql`
   userProducts(userId: $userId) {
     _id
     title
-    category
     description
+    category
     images
     createdAt
   }

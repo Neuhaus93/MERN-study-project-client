@@ -10,7 +10,7 @@ query Post($postId: String!) {
     }
     replies {
       _id
-      user {
+      creator {
         _id
         fullName
         photo

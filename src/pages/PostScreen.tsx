@@ -49,7 +49,7 @@ export const PostScreen: React.FC<PostScreenProps> = ({ match }) => {
         reply={{
           __typename: 'Reply',
           _id: data.post._id,
-          user: data.post.creator,
+          creator: data.post.creator,
           body: data.post.body,
           createdAt: data.post.createdAt,
         }}
@@ -58,7 +58,7 @@ export const PostScreen: React.FC<PostScreenProps> = ({ match }) => {
         <ForumPost
           key={reply._id}
           postId={data.post._id}
-          isCreator={data.post.replies[index].user._id === mongoUser?._id}
+          isCreator={data.post.replies[index].creator._id === mongoUser?._id}
           postNumber={index + 2}
           reply={reply}
         />
@@ -87,10 +87,7 @@ const ForumPost: React.FC<ForumPostProps> = (props) => {
     if (postId === reply._id) {
       if (mongoUser) {
         await deletePost({
-          variables: {
-            postId,
-            userId: mongoUser._id,
-          },
+          variables: { postId },
           update: (cache, { data }) => {
             if (!data) return;
             const { deletePost } = data;
@@ -129,9 +126,9 @@ const ForumPost: React.FC<ForumPostProps> = (props) => {
     <StyledForumPost className='box-border sm:flex'>
       <div className='user'>
         <div className='user__image'>
-          <UserImage square src={reply.user.photo} />
+          <UserImage square src={reply.creator.photo} />
         </div>
-        <p className='user__name flex-1'>{reply.user.fullName}</p>
+        <p className='user__name flex-1'>{reply.creator.fullName}</p>
         {isCreator && (
           <div className='inline-flex pr-3 items-center justify-center pt-2 sm:pr-0 sm:w-full'>
             <ButtonRedOutline
@@ -188,7 +185,7 @@ const ForumForm: React.FC<ForumFormProps> = (props) => {
     }
 
     await replyPost({
-      variables: { postId, userId: mongoUser._id, body: newReply },
+      variables: { postId, body: newReply },
     });
     setNewReply('');
   };

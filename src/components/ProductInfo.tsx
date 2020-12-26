@@ -123,7 +123,7 @@ const Buttons: React.FC<ButtonsProps> = (props) => {
     }
 
     likeProduct({
-      variables: { userId: mongoUser._id, productId },
+      variables: { productId },
     });
   };
 
@@ -139,7 +139,7 @@ const Buttons: React.FC<ButtonsProps> = (props) => {
       if (!mongoUser) return;
 
       deleteProduct({
-        variables: { userId: mongoUser._id, productId },
+        variables: { productId },
         refetchQueries: [
           { query: ProductsDocument, variables: { category: '' } },
         ],

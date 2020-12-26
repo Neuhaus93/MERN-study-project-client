@@ -115,7 +115,6 @@ const EditAdForm: React.FC<EditAdFormProp> = ({
       const newImagesUrl = await uploadMultipleFiles(newImages, productId);
       const updateProductInput: UpdateProductMutationVariables['updateProductInput'] = {
         ...formValues,
-        userId: mongoUser._id,
         productId,
         images: [...filteredExistingImages, ...newImagesUrl],
         price: formValues.price.toString(),
@@ -197,7 +196,7 @@ const EditAdForm: React.FC<EditAdFormProp> = ({
           ) : null}
           <div className='col-span-2'>
             <SubmitButton className='btn' type='submit' disabled={loading}>
-              POST
+              EDIT
             </SubmitButton>
           </div>
         </Form>

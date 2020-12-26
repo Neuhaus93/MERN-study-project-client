@@ -68,9 +68,7 @@ const EditProfileForm: React.FC = () => {
     dispatch({ type: 'startEdit' });
     if (mongoUser) {
       try {
-        await updateUser({
-          variables: { userId: mongoUser._id, updateUserInput },
-        });
+        await updateUser({ variables: { updateUserInput } });
         dispatch({ type: 'setSuccess', payload: 'Profile Updated' });
       } catch {
         dispatch({

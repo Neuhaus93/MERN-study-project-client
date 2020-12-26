@@ -46,7 +46,7 @@ body {
   }
 
   .products-table-paginate > li > a {
-    @apply py-2 px-4 flex flex-1;
+    @apply py-1 px-3 flex flex-1;
   }
 
   .products-table-paginate > .selected {

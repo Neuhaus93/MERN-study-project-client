@@ -1,3 +1,3 @@
-mutation DeleteProduct($userId: String!, $productId: String!) {
-  deleteProduct(userId: $userId, productId: $productId)
+mutation DeleteProduct($productId: String!) {
+  deleteProduct(productId: $productId)
 }

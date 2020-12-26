@@ -43,6 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       cache.gc();
     }
     setMongoUser(null);
+    localStorage.removeItem('@token');
 
     return auth.signOut();
   }
@@ -60,7 +61,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      const token = await user?.getIdToken(true);
+      if (token) {
+        localStorage.setItem('@token', token);
+      }
       setCurrentUser(user);
       setLoading(false);
     });

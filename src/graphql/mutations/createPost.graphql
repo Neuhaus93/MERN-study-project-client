@@ -1,5 +1,5 @@
-mutation CreatePost($userId: String!, $postInput: PostInput!) {
-  createPost(userid: $userId, postInput: $postInput) {
+mutation CreatePost($postInput: PostInput!) {
+  createPost(postInput: $postInput) {
     ...RegularPost
     repliesCount
     createdAt

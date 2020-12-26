@@ -41,14 +41,8 @@ const CreatePostForm: React.FC = () => {
     if (isPosting || !mongoUser) return;
     setIsPosting(true);
 
-    const { title, body, category } = values;
-    const userId = mongoUser._id;
-
     const { data } = await createPost({
-      variables: {
-        userId,
-        postInput: { title, body, category },
-      },
+      variables: { postInput: values },
       refetchQueries: [{ query: PostsDocument }],
     });
 

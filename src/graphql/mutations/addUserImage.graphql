@@ -1,5 +1,5 @@
-mutation addUserImage($imageSrc: String!, $firebaseId: String!) {
-  addUserImage(imageSrc: $imageSrc, firebaseId: $firebaseId) {
+mutation addUserImage($imageSrc: String!) {
+  addUserImage(imageSrc: $imageSrc) {
     _id
     photo
   }

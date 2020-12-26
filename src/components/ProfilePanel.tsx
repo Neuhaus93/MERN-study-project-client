@@ -55,7 +55,7 @@ export const ProfilePanel: React.FC<ProfilePanelProps> = ({
           .getDownloadURL()
           .then((url) => {
             addUserImage({
-              variables: { firebaseId: currentUser.uid, imageSrc: url },
+              variables: { imageSrc: url },
             });
           })
           .catch((err) => console.log('Error getting image url', err));

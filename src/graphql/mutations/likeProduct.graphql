@@ -1,5 +1,5 @@
-mutation LikeProduct($productId: String!, $userId: String!) {
-  likeProduct(productId: $productId, userId: $userId) {
+mutation LikeProduct($productId: String!) {
+  likeProduct(productId: $productId) {
     _id
     likes
   }
